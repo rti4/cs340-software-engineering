@@ -1,0 +1,69 @@
+// Usage model for a simple security alarm
+//
+// A use of the security alarm starts with the device being idle,
+// and ends with the entering of a correct combination entry.
+// The light has to go from off to on to off for any possible use
+// of the alarm.
+
+($ fill (1) $)
+
+model alarm
+
+[Enter]
+               "Set"         [Ready]
+
+[Ready]
+  ($0.24$)     "Bad Digit"   [Entry Error]
+               "Clear"       [Ready]
+  ($0.72$)     "Good Digit"  [1_OK]
+               "Set"         [Ready]
+  ($0.001$)    "Trip"        [Alarm]
+
+[Entry Error]
+               "Bad Digit"   [Entry Error]
+  ($0.96$)     "Clear"       [Ready]
+               "Set"         [Entry Error]
+  ($0.00001$)  "Trip"        [Alarm & Entry Error]
+
+[1_OK]
+  ($0.23$)     "Bad Digit"   [Entry Error]
+  ($0.01$)     "Clear"       [Ready]
+  ($0.72$)     "Good Digit"  [2_OK]
+               "Set"         [1_OK]
+  ($0.00001$)  "Trip"        [Alarm & Entry Error]
+
+[Alarm]
+  ($0.35$)     "Bad Digit"   [Alarm & Entry Error]
+               "Clear"       [Alarm]
+  ($0.53$)     "Good Digit"  [Alarm & 1_OK]
+               "Set"         [Alarm]
+               "Trip"        [Alarm]
+
+[Alarm & Entry Error]
+               "Bad Digit"   [Alarm & Entry Error]
+  ($0.88$)     "Clear"       [Alarm]
+               "Set"         [Alarm & Entry Error]
+               "Trip"        [Alarm & Entry Error]
+
+[2_OK]
+  ($0.23$)     "Bad Digit"   [Entry Error]
+  ($0.01$)     "Clear"       [Ready]
+  ($0.72$)     "Good Digit"  [Exit]
+               "Set"         [2_OK]
+               "Trip"        [Alarm & Entry Error]
+
+[Alarm & 1_OK]
+  ($0.18$)     "Bad Digit"   [Alarm & Entry Error]
+  ($0.18$)     "Clear"       [Alarm]
+  ($0.53$)     "Good Digit"  [Alarm & 2_OK]
+               "Set"         [Alarm & 1_OK]
+               "Trip"        [Alarm & 1_OK]
+
+[Alarm & 2_OK]
+  ($0.33$)     "Bad Digit"   [Alarm & Entry Error]
+  ($0.02$)     "Clear"       [Alarm]
+  ($0.53$)     "Good Digit"  [Exit]
+               "Set"         [Alarm & 2_OK]
+               "Trip"        [Alarm & 2_OK]
+
+end

@@ -1,0 +1,6 @@
+legal and unreduced - canonical
+
+cANONICAL sequence analysis (CSA)
+	INVERT STATE VARIABLE
+	ASSIGN VALUE TO STATE VARIABLES
+	DISTINGUSIH ALL CANONICAL

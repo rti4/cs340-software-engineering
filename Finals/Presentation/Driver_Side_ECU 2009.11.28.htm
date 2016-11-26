@@ -1,0 +1,5648 @@
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<HTML>
+
+<HEAD>
+<TITLE>Driver_Side_ECU 2009.11.28.html, Enumeration</TITLE>
+
+</HEAD>
+<BODY BGCOLOR='white' TEXT='black'
+      LINK='blue' VLINK='blue'
+      ALINK='green'>
+<H1>Driver Side ECU</H1>
+<H2>Description</H2>
+This is the enumeration for a Driver Side ECU.
+<H2>Version</H2>
+$Id: $
+<H2>Table Of Contents</H2>
+<UL>
+<LI><A href="#REQUIREMENTS">Requirements</A                     ></LI>
+<LI><A href="#STIMULI">Stimuli</A                ></LI>
+<LI><A href="#OUTPUTS">Outputs</A                ></LI>
+<LI><A href="#INTERFACES">Interfaces</A                   ></LI>
+<LI><A href="#NAMEDRESPONSES">Named Responses</A                       ></LI>
+<LI><A href="#PREDICATES">Predicates</A                   ></LI>
+<LI><A href="#ENUMERATION">Sequence Enumeration</A                    ></LI>
+<UL>
+<LI><A href="#LENGTH1">Length 1</A></LI>
+<LI><A href="#LENGTH2">Length 2</A></LI>
+<LI><A href="#LENGTH3">Length 3</A></LI>
+<LI><A href="#LENGTH4">Length 4</A></LI>
+<LI><A href="#LENGTH5">Length 5</A></LI>
+<LI><A href="#LENGTH6">Length 6</A></LI>
+</UL>
+<LI><A href="#VARIABLES">State Variables</A></LI>
+<LI><A href="#CSA">Canonical Sequence Analysis</A></LI>
+<LI><A href="#STATEBOX">State Box Specification</A></LI>
+</UL>
+<H1 id="REQUIREMENTS">Requirements</H1>
+<UL>
+<LI id="REQD0"><b>D0:</b> Prior to the car being started, the Driver Side ECU is inactive, therefore all signals to the Driver Side ECU other than the engine start signal (S) is ignored.</LI>
+<LI id="REQD1"><b>D1:</b> Any car start signal recieved after the initial car start signal will act as a ECU reset.</LI>
+<LI id="REQD2"><b>D2:</b> When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.</LI>
+<LI id="REQD3"><b>D3:</b> The state of the ECU must be updated if the state of the engine changes.</LI>
+<LI id="REQD4"><b>D4:</b> Extraneous temperature and timer signals are ignored.</LI>
+<LI id="REQR1"><b>R1:</b> There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.</LI>
+<LI id="REQR2"><b>R2:</b> The driver side ECU initilizes when the car key is in start position.</LI>
+<LI id="REQR3"><b>R3:</b> Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.</LI>
+<LI id="REQR4"><b>R4:</b> If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.</LI>
+<LI id="REQR5"><b>R5:</b> The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.</LI>
+<LI id="REQR6"><b>R6:</b> Engine has to be running when mirror heating is used.</LI>
+<LI id="REQR7"><b>R7:</b> The engine state information is sent via the MRUN signal (MRUN = 1 when engine is on).</LI>
+</UL>
+<H1 id="INTERFACES">Interfaces</H1>
+<UL>
+<LI id="INTERFACECAN Bus"><b>CAN Bus</b></LI>
+<UL>
+<LI>Description: Central commication header for all the different Electronic Controlling Units in the vehicle.</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</LI>
+</UL>
+<LI id="INTERFACEDriver Side Mirror"><b>Driver Side Mirror</b></LI>
+<UL>
+<LI>Description: This components includes the mirror, the mirror motor, the mirror heater coil, extreme up/down/left/right postition sensors, and two timers.</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</LI>
+</UL>
+<LI id="INTERFACEMirror Adjustment Panel"><b>Mirror Adjustment Panel</b></LI>
+<UL>
+<LI>Description: This panel houses is located next to the steering wheel and it houses the mirror adjustment stick and the mirror toggle switch.</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR1" title="There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.">R1</A>
+]
+</LI>
+</UL>
+</UL>
+<H1 id="STIMULI">Stimuli</H1>
+<UL>
+<LI id="STIMMD"><b>MD</b></LI>
+<UL>
+<LI>Long Name: Mirror Down</LI>
+<LI>Description: Signal received when the user presses the adjustment joystick down. </LI>
+<LI>Sources: [
+<A href="#INTERFACEMirror Adjustment Panel">Mirror Adjustment Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</LI>
+</UL>
+<LI id="STIMML"><b>ML</b></LI>
+<UL>
+<LI>Long Name: Mirror Left</LI>
+<LI>Description: Signal received when the user presses the adjustment joystick left. </LI>
+<LI>Sources: [
+<A href="#INTERFACEMirror Adjustment Panel">Mirror Adjustment Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</LI>
+</UL>
+<LI id="STIMMR"><b>MR</b></LI>
+<UL>
+<LI>Long Name: Mirror Right</LI>
+<LI>Description: Signal received when the user presses the adjustment joystick right. </LI>
+<LI>Sources: [
+<A href="#INTERFACEMirror Adjustment Panel">Mirror Adjustment Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</LI>
+</UL>
+<LI id="STIMMU"><b>MU</b></LI>
+<UL>
+<LI>Long Name: Mirror Up</LI>
+<LI>Description: Signal received when the user presses the adjustment joystick up. </LI>
+<LI>Sources: [
+<A href="#INTERFACEMirror Adjustment Panel">Mirror Adjustment Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</LI>
+</UL>
+<LI id="STIMR"><b>R</b></LI>
+<UL>
+<LI>Long Name: MRUN</LI>
+<LI>Description: A signal which is triggered when the state of the system is changed.</LI>
+<LI>Sources: [
+<A href="#INTERFACECAN Bus">CAN Bus</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</LI>
+</UL>
+<LI id="STIMS"><b>S</b></LI>
+<UL>
+<LI>Long Name: Engine Start</LI>
+<LI>Description: This signal is generated when the car has been started.</LI>
+<LI>Sources: [
+<A href="#INTERFACECAN Bus">CAN Bus</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR2" title="The driver side ECU initilizes when the car key is in start position.">R2</A>
+]
+</LI>
+</UL>
+<LI id="STIMT"><b>T</b></LI>
+<UL>
+<LI>Long Name: Temperature</LI>
+<LI>Description: A alarm signal which is triggered when the temperature of the mirror is less than or equal to 2 degree celcius.</LI>
+<LI>Sources: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</LI>
+</UL>
+<LI id="STIMT1"><b>T1</b></LI>
+<UL>
+<LI>Long Name: Timer 10 sec</LI>
+<LI>Description: Signal sent when 10 seconds has passed on the 10 second timer.</LI>
+<LI>Sources: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</LI>
+</UL>
+<LI id="STIMT2"><b>T2</b></LI>
+<UL>
+<LI>Long Name: Timer 2 min</LI>
+<LI>Description: Signal sent when 2 minutes has passed on the 2 minute timer.</LI>
+<LI>Sources: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</LI>
+</UL>
+<LI id="STIMTs"><b>Ts</b></LI>
+<UL>
+<LI>Long Name: Mirror Toggle Switch</LI>
+<LI>Description: This switch is used to set which mirror is controlled by the Mirror adjustment joystick.  A signal is sent whenever the position on the switch changes.</LI>
+<LI>Sources: [
+<A href="#INTERFACEMirror Adjustment Panel">Mirror Adjustment Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR1" title="There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.">R1</A>
+]
+</LI>
+</UL>
+</UL>
+<H1 id="OUTPUTS">Outputs</H1>
+<UL>
+<LI id="OUTPUTFwdSignal"><b>FwdSignal</b></LI>
+<UL>
+<LI>Long Name: Forward Signal</LI>
+<LI>Description: Forwards the last signal recieved to the passenger side ECU via the CAN bus.</LI>
+<LI>Destinations: [
+<A href="#INTERFACECAN Bus">CAN Bus</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTHOff"><b>HOff</b></LI>
+<UL>
+<LI>Long Name: Heater Off</LI>
+<LI>Description: Turns off the car mirror heater.</LI>
+<LI>Destinations: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTHOn"><b>HOn</b></LI>
+<UL>
+<LI>Long Name: Heater On</LI>
+<LI>Description: Turns on the car mirror heater.</LI>
+<LI>Destinations: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTMD"><b>MD</b></LI>
+<UL>
+<LI>Long Name: Move the Mirror Down</LI>
+<LI>Description: Angles the Mirror Downward</LI>
+<LI>Destinations: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTML"><b>ML</b></LI>
+<UL>
+<LI>Long Name: Move the Mirror Left</LI>
+<LI>Description: Rotates the Mirror Leftward</LI>
+<LI>Destinations: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTMR"><b>MR</b></LI>
+<UL>
+<LI>Long Name: Move the Mirror Right</LI>
+<LI>Description: Rotates the Mirror Rightward</LI>
+<LI>Destinations: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTMU"><b>MU</b></LI>
+<UL>
+<LI>Long Name: Move the Mirror up</LI>
+<LI>Description: Angles the Mirror Upwards</LI>
+<LI>Destinations: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTMirrorErr"><b>MirrorErr</b></LI>
+<UL>
+<LI>Long Name: Mirror Error</LI>
+<LI>Description: Sends an error message to the CAS bus.</LI>
+<LI>Destinations: [
+<A href="#INTERFACECAN Bus">CAN Bus</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTT_10sec_Off"><b>T_10sec_Off</b></LI>
+<UL>
+<LI>Long Name: Turn off 10 sec Timer </LI>
+<LI>Description: Turns off the 10 second timer.</LI>
+<LI>Destinations: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTT_10sec_On"><b>T_10sec_On</b></LI>
+<UL>
+<LI>Long Name: Turn on 10 sec Timer </LI>
+<LI>Description: Turns on the 10 second timer.</LI>
+<LI>Destinations: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTT_2min_off"><b>T_2min_off</b></LI>
+<UL>
+<LI>Long Name: Turn off 2 min Timer </LI>
+<LI>Description: Turns off 2 minute timer.</LI>
+<LI>Destinations: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTT_2min_on"><b>T_2min_on</b></LI>
+<UL>
+<LI>Long Name: Turn on 2 min Timer </LI>
+<LI>Description: Turns on 2 minute timer.</LI>
+<LI>Destinations: [
+<A href="#INTERFACEDriver Side Mirror">Driver Side Mirror</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</LI>
+</UL>
+</UL>
+<H1 id="NAMEDRESPONSES">Named Responses</H1>
+<UL>
+<LI id="NAMEDRESPONSECool Down Heater"><b>Cool Down Heater</b></LI>
+<UL>
+<LI>Outputs: [
+<A href="#OUTPUTT_10sec_Off">T_10sec_Off</A>
+, 
+<A href="#OUTPUTT_2min_on">T_2min_on</A>
+, 
+<A href="#OUTPUTHOff">HOff</A>
+]</LI>
+</UL>
+<LI id="NAMEDRESPONSEReset ECU"><b>Reset ECU</b></LI>
+<UL>
+<LI>Outputs: [
+<A href="#OUTPUTHOff">HOff</A>
+, 
+<A href="#OUTPUTT_10sec_Off">T_10sec_Off</A>
+, 
+<A href="#OUTPUTT_2min_off">T_2min_off</A>
+]</LI>
+</UL>
+<LI id="NAMEDRESPONSEStart Header"><b>Start Header</b></LI>
+<UL>
+<LI>Outputs: [
+<A href="#OUTPUTT_10sec_On">T_10sec_On</A>
+, 
+<A href="#OUTPUTHOn">HOn</A>
+]</LI>
+</UL>
+</UL>
+<H1 id="PREDICATES">Predicates</H1>
+<UL>
+<LI id="PREDICATEExtreme Down"><b>Extreme Down</b></LI>
+<UL>
+<LI>Description: Mirror has reached the extreme down position. All downward inputs will be
+ignored</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</LI>
+</UL>
+<LI id="PREDICATEExtreme Left"><b>Extreme Left</b></LI>
+<UL>
+<LI>Description: Mirror has reached the extreme left position. All leftward inputs will be
+ignored</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</LI>
+</UL>
+<LI id="PREDICATEExtreme Right"><b>Extreme Right</b></LI>
+<UL>
+<LI>Description: Mirror has reached the extreme right position. All rightward inputs will be
+ignored</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</LI>
+</UL>
+<LI id="PREDICATEExtreme Up"><b>Extreme Up</b></LI>
+<UL>
+<LI>Description: Mirror has reached the extreme up position. All upward inputs will be
+ignored</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</LI>
+</UL>
+<LI id="PREDICATEMRUN"><b>MRUN</b></LI>
+<UL>
+<LI>Description: false if the engine if off
+true if the engine is running</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR7" title="The engine state information is sent via the MRUN signal (MRUN = 1 when engine is on).">R7</A>
+]
+</LI>
+</UL>
+</UL>
+<H1 id="ENUMERATION">Sequence Enumeration</H1>
+
+<H2 id="LENGTH1">Length 1</H2>
+
+<H3 id="lambda">Prefix: 
+
+<A href="#lambda">lambda</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD0" title="Prior to the car being started, the Driver Side ECU is inactive, therefore all signals to the Driver Side ECU other than the engine start signal (S) is ignored.">D0</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD0" title="Prior to the car being started, the Driver Side ECU is inactive, therefore all signals to the Driver Side ECU other than the engine start signal (S) is ignored.">D0</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD0" title="Prior to the car being started, the Driver Side ECU is inactive, therefore all signals to the Driver Side ECU other than the engine start signal (S) is ignored.">D0</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD0" title="Prior to the car being started, the Driver Side ECU is inactive, therefore all signals to the Driver Side ECU other than the engine start signal (S) is ignored.">D0</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD0" title="Prior to the car being started, the Driver Side ECU is inactive, therefore all signals to the Driver Side ECU other than the engine start signal (S) is ignored.">D0</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMS" title="Engine Start">S</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#S">------------</A>
+</TD>
+<TD>
+[
+<A href="#REQR2" title="The driver side ECU initilizes when the car key is in start position.">R2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT" title="Temperature">T</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD0" title="Prior to the car being started, the Driver Side ECU is inactive, therefore all signals to the Driver Side ECU other than the engine start signal (S) is ignored.">D0</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT1" title="Timer 10 sec">T1</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD0" title="Prior to the car being started, the Driver Side ECU is inactive, therefore all signals to the Driver Side ECU other than the engine start signal (S) is ignored.">D0</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT2" title="Timer 2 min">T2</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD0" title="Prior to the car being started, the Driver Side ECU is inactive, therefore all signals to the Driver Side ECU other than the engine start signal (S) is ignored.">D0</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMTs" title="Mirror Toggle Switch">Ts</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD0" title="Prior to the car being started, the Driver Side ECU is inactive, therefore all signals to the Driver Side ECU other than the engine start signal (S) is ignored.">D0</A>
+]
+</TD>
+</TR>
+</TABLE>
+
+<H2 id="LENGTH2">Length 2</H2>
+
+<H3 id="S">Prefix: 
+
+<A href="#lambda">S</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+<A href="#PREDICATEExtreme Down" title="Mirror has reached the extreme down position. All downward inputs will be
+ignored">&lt;Extreme Down() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMD" title="Move the Mirror Down">MD</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+<A href="#PREDICATEExtreme Down" title="Mirror has reached the extreme down position. All downward inputs will be
+ignored">&lt;Extreme Down() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+<A href="#PREDICATEExtreme Left" title="Mirror has reached the extreme left position. All leftward inputs will be
+ignored">&lt;Extreme Left() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTML" title="Move the Mirror Left">ML</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+<A href="#PREDICATEExtreme Left" title="Mirror has reached the extreme left position. All leftward inputs will be
+ignored">&lt;Extreme Left() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+<A href="#PREDICATEExtreme Right" title="Mirror has reached the extreme right position. All rightward inputs will be
+ignored">&lt;Extreme Right() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMR" title="Move the Mirror Right">MR</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+<A href="#PREDICATEExtreme Right" title="Mirror has reached the extreme right position. All rightward inputs will be
+ignored">&lt;Extreme Right() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+<A href="#PREDICATEExtreme Up" title="Mirror has reached the extreme up position. All upward inputs will be
+ignored">&lt;Extreme Up() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMU" title="Move the Mirror up">MU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+<A href="#PREDICATEExtreme Up" title="Mirror has reached the extreme up position. All upward inputs will be
+ignored">&lt;Extreme Up() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">------------</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMS" title="Engine Start">S</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD1" title="Any car start signal recieved after the initial car start signal will act as a ECU reset.">D1</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT" title="Temperature">T</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQR6" title="Engine has to be running when mirror heating is used.">R6</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT1" title="Timer 10 sec">T1</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT2" title="Timer 2 min">T2</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMTs" title="Mirror Toggle Switch">Ts</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAATs">------------</A>
+</TD>
+<TD>
+[
+<A href="#REQR1" title="There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.">R1</A>
+]
+</TD>
+</TR>
+</TABLE>
+
+<H2 id="LENGTH3">Length 3</H2>
+
+<H3 id="SAAAR&lt;MRUN()=true&gt;">Prefix: 
+
+<A href="#S">S.R&lt;MRUN()=true&gt;</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+<A href="#PREDICATEExtreme Down" title="Mirror has reached the extreme down position. All downward inputs will be
+ignored">&lt;Extreme Down() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMD" title="Move the Mirror Down">MD</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+<A href="#PREDICATEExtreme Down" title="Mirror has reached the extreme down position. All downward inputs will be
+ignored">&lt;Extreme Down() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+<A href="#PREDICATEExtreme Left" title="Mirror has reached the extreme left position. All leftward inputs will be
+ignored">&lt;Extreme Left() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTML" title="Move the Mirror Left">ML</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+<A href="#PREDICATEExtreme Left" title="Mirror has reached the extreme left position. All leftward inputs will be
+ignored">&lt;Extreme Left() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+<A href="#PREDICATEExtreme Right" title="Mirror has reached the extreme right position. All rightward inputs will be
+ignored">&lt;Extreme Right() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMR" title="Move the Mirror Right">MR</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+<A href="#PREDICATEExtreme Right" title="Mirror has reached the extreme right position. All rightward inputs will be
+ignored">&lt;Extreme Right() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+<A href="#PREDICATEExtreme Up" title="Mirror has reached the extreme up position. All upward inputs will be
+ignored">&lt;Extreme Up() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMU" title="Move the Mirror up">MU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+<A href="#PREDICATEExtreme Up" title="Mirror has reached the extreme up position. All upward inputs will be
+ignored">&lt;Extreme Up() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMS" title="Engine Start">S</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD1" title="Any car start signal recieved after the initial car start signal will act as a ECU reset.">D1</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT" title="Temperature">T</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEStart Header" title="[T_10sec_On, HOn]">Start Header</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">------------</A>
+</TD>
+<TD>
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT1" title="Timer 10 sec">T1</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT2" title="Timer 2 min">T2</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMTs" title="Mirror Toggle Switch">Ts</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">------------</A>
+</TD>
+<TD>
+[
+<A href="#REQR1" title="There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.">R1</A>
+]
+</TD>
+</TR>
+</TABLE>
+
+<H3 id="SAAATs">Prefix: 
+
+<A href="#S">S.Ts</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAATs">S.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAATs">S.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAATs">S.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAATs">S.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMS" title="Engine Start">S</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD1" title="Any car start signal recieved after the initial car start signal will act as a ECU reset.">D1</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT" title="Temperature">T</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAATs">S.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQR6" title="Engine has to be running when mirror heating is used.">R6</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT1" title="Timer 10 sec">T1</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAATs">S.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT2" title="Timer 2 min">T2</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAATs">S.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMTs" title="Mirror Toggle Switch">Ts</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAATs">S.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQR1" title="There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.">R1</A>
+]
+</TD>
+</TR>
+</TABLE>
+
+<H2 id="LENGTH4">Length 4</H2>
+
+<H3 id="SAAAR&lt;MRUN()=true&gt;AAAT">Prefix: 
+
+<A href="#SAAAR<MRUN()=true>">S.R&lt;MRUN()=true&gt;.T</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+<A href="#PREDICATEExtreme Down" title="Mirror has reached the extreme down position. All downward inputs will be
+ignored">&lt;Extreme Down() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMD" title="Move the Mirror Down">MD</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">S.R&lt;MRUN()=true&gt;.T</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+<A href="#PREDICATEExtreme Down" title="Mirror has reached the extreme down position. All downward inputs will be
+ignored">&lt;Extreme Down() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">S.R&lt;MRUN()=true&gt;.T</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+<A href="#PREDICATEExtreme Left" title="Mirror has reached the extreme left position. All leftward inputs will be
+ignored">&lt;Extreme Left() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTML" title="Move the Mirror Left">ML</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">S.R&lt;MRUN()=true&gt;.T</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+<A href="#PREDICATEExtreme Left" title="Mirror has reached the extreme left position. All leftward inputs will be
+ignored">&lt;Extreme Left() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">S.R&lt;MRUN()=true&gt;.T</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+<A href="#PREDICATEExtreme Right" title="Mirror has reached the extreme right position. All rightward inputs will be
+ignored">&lt;Extreme Right() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMR" title="Move the Mirror Right">MR</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">S.R&lt;MRUN()=true&gt;.T</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+<A href="#PREDICATEExtreme Right" title="Mirror has reached the extreme right position. All rightward inputs will be
+ignored">&lt;Extreme Right() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">S.R&lt;MRUN()=true&gt;.T</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+<A href="#PREDICATEExtreme Up" title="Mirror has reached the extreme up position. All upward inputs will be
+ignored">&lt;Extreme Up() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMU" title="Move the Mirror up">MU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">S.R&lt;MRUN()=true&gt;.T</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+<A href="#PREDICATEExtreme Up" title="Mirror has reached the extreme up position. All upward inputs will be
+ignored">&lt;Extreme Up() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">S.R&lt;MRUN()=true&gt;.T</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">S.R&lt;MRUN()=true&gt;.T</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMS" title="Engine Start">S</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD1" title="Any car start signal recieved after the initial car start signal will act as a ECU reset.">D1</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT" title="Temperature">T</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">S.R&lt;MRUN()=true&gt;.T</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT1" title="Timer 10 sec">T1</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSECool Down Heater" title="[T_10sec_Off, T_2min_on, HOff]">Cool Down Heater</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">------------</A>
+</TD>
+<TD>
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT2" title="Timer 2 min">T2</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">S.R&lt;MRUN()=true&gt;.T</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMTs" title="Mirror Toggle Switch">Ts</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAATs">------------</A>
+</TD>
+<TD>
+[
+<A href="#REQR1" title="There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.">R1</A>
+]
+</TD>
+</TR>
+</TABLE>
+
+<H3 id="SAAAR&lt;MRUN()=true&gt;AAATs">Prefix: 
+
+<A href="#SAAAR<MRUN()=true>">S.R&lt;MRUN()=true&gt;.Ts</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAATs">S.R&lt;MRUN()=true&gt;.T.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAATs">S.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMS" title="Engine Start">S</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD1" title="Any car start signal recieved after the initial car start signal will act as a ECU reset.">D1</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT" title="Temperature">T</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEStart Header" title="[T_10sec_On, HOn]">Start Header</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAATs">S.R&lt;MRUN()=true&gt;.T.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT1" title="Timer 10 sec">T1</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT2" title="Timer 2 min">T2</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMTs" title="Mirror Toggle Switch">Ts</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQR1" title="There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.">R1</A>
+]
+</TD>
+</TR>
+</TABLE>
+
+<H2 id="LENGTH5">Length 5</H2>
+
+<H3 id="SAAAR&lt;MRUN()=true&gt;AAATAAAT1">Prefix: 
+
+<A href="#SAAAR<MRUN()=true>AAAT">S.R&lt;MRUN()=true&gt;.T.T1</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+<A href="#PREDICATEExtreme Down" title="Mirror has reached the extreme down position. All downward inputs will be
+ignored">&lt;Extreme Down() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMD" title="Move the Mirror Down">MD</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+<A href="#PREDICATEExtreme Down" title="Mirror has reached the extreme down position. All downward inputs will be
+ignored">&lt;Extreme Down() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+<A href="#PREDICATEExtreme Left" title="Mirror has reached the extreme left position. All leftward inputs will be
+ignored">&lt;Extreme Left() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTML" title="Move the Mirror Left">ML</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+<A href="#PREDICATEExtreme Left" title="Mirror has reached the extreme left position. All leftward inputs will be
+ignored">&lt;Extreme Left() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+<A href="#PREDICATEExtreme Right" title="Mirror has reached the extreme right position. All rightward inputs will be
+ignored">&lt;Extreme Right() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMR" title="Move the Mirror Right">MR</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+<A href="#PREDICATEExtreme Right" title="Mirror has reached the extreme right position. All rightward inputs will be
+ignored">&lt;Extreme Right() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+<A href="#PREDICATEExtreme Up" title="Mirror has reached the extreme up position. All upward inputs will be
+ignored">&lt;Extreme Up() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMU" title="Move the Mirror up">MU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1</A>
+</TD>
+<TD>
+[
+<A href="#REQR3" title="Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.">R3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+<A href="#PREDICATEExtreme Up" title="Mirror has reached the extreme up position. All upward inputs will be
+ignored">&lt;Extreme Up() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTMirrorErr" title="Mirror Error">MirrorErr</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1</A>
+</TD>
+<TD>
+[
+<A href="#REQR4" title="If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.">R4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMS" title="Engine Start">S</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD1" title="Any car start signal recieved after the initial car start signal will act as a ECU reset.">D1</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT" title="Temperature">T</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT1" title="Timer 10 sec">T1</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT2" title="Timer 2 min">T2</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTT_2min_off" title="Turn off 2 min Timer ">T_2min_off</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMTs" title="Mirror Toggle Switch">Ts</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1AAATs">------------</A>
+</TD>
+<TD>
+[
+<A href="#REQR1" title="There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.">R1</A>
+]
+</TD>
+</TR>
+</TABLE>
+
+<H3 id="SAAAR&lt;MRUN()=true&gt;AAATAAATs">Prefix: 
+
+<A href="#SAAAR<MRUN()=true>AAAT">S.R&lt;MRUN()=true&gt;.T.Ts</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAATs">S.R&lt;MRUN()=true&gt;.T.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAATs">S.R&lt;MRUN()=true&gt;.T.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAATs">S.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAATs">S.R&lt;MRUN()=true&gt;.T.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMS" title="Engine Start">S</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD1" title="Any car start signal recieved after the initial car start signal will act as a ECU reset.">D1</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT" title="Temperature">T</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT1" title="Timer 10 sec">T1</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSECool Down Heater" title="[T_10sec_Off, T_2min_on, HOff]">Cool Down Heater</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1AAATs">S.R&lt;MRUN()=true&gt;.T.T1.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT2" title="Timer 2 min">T2</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMTs" title="Mirror Toggle Switch">Ts</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAATs">S.R&lt;MRUN()=true&gt;.T.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQR1" title="There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.">R1</A>
+]
+</TD>
+</TR>
+</TABLE>
+
+<H2 id="LENGTH6">Length 6</H2>
+
+<H3 id="SAAAR&lt;MRUN()=true&gt;AAATAAAT1AAATs">Prefix: 
+
+<A href="#SAAAR<MRUN()=true>AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1.Ts</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMD" title="Mirror Down">MD</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1AAATs">S.R&lt;MRUN()=true&gt;.T.T1.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMML" title="Mirror Left">ML</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1AAATs">S.R&lt;MRUN()=true&gt;.T.T1.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMR" title="Mirror Right">MR</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1AAATs">S.R&lt;MRUN()=true&gt;.T.T1.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMMU" title="Mirror Up">MU</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTFwdSignal" title="Forward Signal">FwdSignal</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1AAATs">S.R&lt;MRUN()=true&gt;.T.T1.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD2" title="When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.">D2</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAATs">S.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMR" title="MRUN">R</A>
+<A href="#PREDICATEMRUN" title="false if the engine if off
+true if the engine is running">&lt;MRUN() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAATs">S.R&lt;MRUN()=true&gt;.T.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD3" title="The state of the ECU must be updated if the state of the engine changes.">D3</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMS" title="Engine Start">S</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEReset ECU" title="[HOff, T_10sec_Off, T_2min_off]">Reset ECU</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+[
+<A href="#REQD1" title="Any car start signal recieved after the initial car start signal will act as a ECU reset.">D1</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT" title="Temperature">T</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1AAATs">S.R&lt;MRUN()=true&gt;.T.T1.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT1" title="Timer 10 sec">T1</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1AAATs">S.R&lt;MRUN()=true&gt;.T.T1.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQD4" title="Extraneous temperature and timer signals are ignored.">D4</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMT2" title="Timer 2 min">T2</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTT_2min_off" title="Turn off 2 min Timer ">T_2min_off</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQR5" title="The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.">R5</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMTs" title="Mirror Toggle Switch">Ts</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1AAATs">S.R&lt;MRUN()=true&gt;.T.T1.Ts</A>
+</TD>
+<TD>
+[
+<A href="#REQR1" title="There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.">R1</A>
+]
+</TD>
+</TR>
+</TABLE>
+<H1 id="VARIABLES">State Variables</H1>
+<UL>
+<LI id="VARIABLECar On"><b>Car On</b></LI>
+<UL>
+<LI><b>Description:</b> State of the ignition system</LI>
+<LI><b>Possible Values:</b> 
+[
+-----
+, 
+true
+, 
+false
+]
+</LI>
+</UL>
+<LI id="VARIABLEEngine On"><b>Engine On</b></LI>
+<UL>
+<LI><b>Description:</b> State of the engine</LI>
+<LI><b>Possible Values:</b> 
+[
+-----
+, 
+true
+, 
+false
+]
+</LI>
+</UL>
+<LI id="VARIABLEHeater State"><b>Heater State</b></LI>
+<UL>
+<LI><b>Description:</b> State of the mirror heater.</LI>
+<LI><b>Possible Values:</b> 
+[
+Cooldown
+, 
+-----
+, 
+Ready
+, 
+On
+]
+</LI>
+</UL>
+<LI id="VARIABLEToggle State"><b>Toggle State</b></LI>
+<UL>
+<LI><b>Description:</b> State of the toggle switch.</LI>
+<LI><b>Possible Values:</b> 
+[
+Passenger Side
+, 
+-----
+, 
+Driver Side
+]
+</LI>
+</UL>
+</UL>
+<H1 id="CSA">Canonical Sequence Analysis</H1>
+
+<TABLE border="2">
+<TR>
+<TH>Canonical Sequence</TH>
+<TH>Car On</TH>
+<TH>Engine On</TH>
+<TH>Heater State</TH>
+<TH>Toggle State</TH>
+</TR>
+<TR>
+<TD>
+<A href="#lambda">lambda</A>
+</TD>
+<TD>
+false
+</TD>
+<TD>
+-----
+</TD>
+<TD>
+-----
+</TD>
+<TD>
+-----
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#S">S</A>
+</TD>
+<TD>
+true
+</TD>
+<TD>
+false
+</TD>
+<TD>
+-----
+</TD>
+<TD>
+Driver Side
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;">S.R&lt;MRUN()=true&gt;</A>
+</TD>
+<TD>
+true
+</TD>
+<TD>
+true
+</TD>
+<TD>
+Ready
+</TD>
+<TD>
+Driver Side
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#SAAATs">S.Ts</A>
+</TD>
+<TD>
+true
+</TD>
+<TD>
+false
+</TD>
+<TD>
+-----
+</TD>
+<TD>
+Passenger Side
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAAT">S.R&lt;MRUN()=true&gt;.T</A>
+</TD>
+<TD>
+true
+</TD>
+<TD>
+true
+</TD>
+<TD>
+On
+</TD>
+<TD>
+Driver Side
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATs">S.R&lt;MRUN()=true&gt;.Ts</A>
+</TD>
+<TD>
+true
+</TD>
+<TD>
+true
+</TD>
+<TD>
+Ready
+</TD>
+<TD>
+Passenger Side
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1">S.R&lt;MRUN()=true&gt;.T.T1</A>
+</TD>
+<TD>
+true
+</TD>
+<TD>
+true
+</TD>
+<TD>
+Cooldown
+</TD>
+<TD>
+Driver Side
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAATs">S.R&lt;MRUN()=true&gt;.T.Ts</A>
+</TD>
+<TD>
+true
+</TD>
+<TD>
+true
+</TD>
+<TD>
+On
+</TD>
+<TD>
+Passenger Side
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#SAAAR&lt;MRUN()=true&gt;AAATAAAT1AAATs">S.R&lt;MRUN()=true&gt;.T.T1.Ts</A>
+</TD>
+<TD>
+true
+</TD>
+<TD>
+true
+</TD>
+<TD>
+Cooldown
+</TD>
+<TD>
+Passenger Side
+</TD>
+</TR>
+</TABLE>
+<p>The canonical sequence analysis has been completed.</p>
+<p>The canonical sequence analysis is disjoint.</p>
+<H1 id="STATEBOX">State Box Specification</H1>
+<A href="#STIMMD"><H3>Stimulus: MD, Mirror Down</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="4">Initial State
+<TH colspan="5">Predicates
+<TH rowspan="2">Response
+<TH colspan="4">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+<TH><A href="#PREDICATEExtreme Down">Extreme Down</A>
+<TH><A href="#PREDICATEExtreme Left">Extreme Left</A>
+<TH><A href="#PREDICATEExtreme Right">Extreme Right</A>
+<TH><A href="#PREDICATEExtreme Up">Extreme Up</A>
+<TH><A href="#PREDICATEMRUN">MRUN</A>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+</TR>
+<TR CLASS=illegal>
+<TD>false
+<TD>-----
+<TD>-----
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMD">MD</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMD">MD</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMD">MD</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMD">MD</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+</TABLE>
+<A href="#STIMML"><H3>Stimulus: ML, Mirror Left</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="4">Initial State
+<TH colspan="5">Predicates
+<TH rowspan="2">Response
+<TH colspan="4">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+<TH><A href="#PREDICATEExtreme Down">Extreme Down</A>
+<TH><A href="#PREDICATEExtreme Left">Extreme Left</A>
+<TH><A href="#PREDICATEExtreme Right">Extreme Right</A>
+<TH><A href="#PREDICATEExtreme Up">Extreme Up</A>
+<TH><A href="#PREDICATEMRUN">MRUN</A>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+</TR>
+<TR CLASS=illegal>
+<TD>false
+<TD>-----
+<TD>-----
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTML">ML</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTML">ML</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTML">ML</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTML">ML</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+</TABLE>
+<A href="#STIMMR"><H3>Stimulus: MR, Mirror Right</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="4">Initial State
+<TH colspan="5">Predicates
+<TH rowspan="2">Response
+<TH colspan="4">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+<TH><A href="#PREDICATEExtreme Down">Extreme Down</A>
+<TH><A href="#PREDICATEExtreme Left">Extreme Left</A>
+<TH><A href="#PREDICATEExtreme Right">Extreme Right</A>
+<TH><A href="#PREDICATEExtreme Up">Extreme Up</A>
+<TH><A href="#PREDICATEMRUN">MRUN</A>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+</TR>
+<TR CLASS=illegal>
+<TD>false
+<TD>-----
+<TD>-----
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMR">MR</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMR">MR</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMR">MR</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMR">MR</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+</TABLE>
+<A href="#STIMMU"><H3>Stimulus: MU, Mirror Up</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="4">Initial State
+<TH colspan="5">Predicates
+<TH rowspan="2">Response
+<TH colspan="4">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+<TH><A href="#PREDICATEExtreme Down">Extreme Down</A>
+<TH><A href="#PREDICATEExtreme Left">Extreme Left</A>
+<TH><A href="#PREDICATEExtreme Right">Extreme Right</A>
+<TH><A href="#PREDICATEExtreme Up">Extreme Up</A>
+<TH><A href="#PREDICATEMRUN">MRUN</A>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+</TR>
+<TR CLASS=illegal>
+<TD>false
+<TD>-----
+<TD>-----
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMU">MU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMU">MU</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMU">MU</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMirrorErr">MirrorErr</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTMU">MU</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTFwdSignal">FwdSignal</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+</TABLE>
+<A href="#STIMR"><H3>Stimulus: R, MRUN</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="4">Initial State
+<TH colspan="5">Predicates
+<TH rowspan="2">Response
+<TH colspan="4">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+<TH><A href="#PREDICATEExtreme Down">Extreme Down</A>
+<TH><A href="#PREDICATEExtreme Left">Extreme Left</A>
+<TH><A href="#PREDICATEExtreme Right">Extreme Right</A>
+<TH><A href="#PREDICATEExtreme Up">Extreme Up</A>
+<TH><A href="#PREDICATEMRUN">MRUN</A>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+</TR>
+<TR CLASS=illegal>
+<TD>false
+<TD>-----
+<TD>-----
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>null
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>null
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>null
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>null
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>null
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>null
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>null
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+true
+<TD>null
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+false
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+</TABLE>
+<A href="#STIMS"><H3>Stimulus: S, Engine Start</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="4">Initial State
+<TH colspan="5">Predicates
+<TH rowspan="2">Response
+<TH colspan="4">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+<TH><A href="#PREDICATEExtreme Down">Extreme Down</A>
+<TH><A href="#PREDICATEExtreme Left">Extreme Left</A>
+<TH><A href="#PREDICATEExtreme Right">Extreme Right</A>
+<TH><A href="#PREDICATEExtreme Up">Extreme Up</A>
+<TH><A href="#PREDICATEMRUN">MRUN</A>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+</TR>
+<TR>
+<TD>false
+<TD>-----
+<TD>-----
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTReset ECU">Reset ECU</A>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+</TABLE>
+<A href="#STIMT"><H3>Stimulus: T, Temperature</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="4">Initial State
+<TH colspan="5">Predicates
+<TH rowspan="2">Response
+<TH colspan="4">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+<TH><A href="#PREDICATEExtreme Down">Extreme Down</A>
+<TH><A href="#PREDICATEExtreme Left">Extreme Left</A>
+<TH><A href="#PREDICATEExtreme Right">Extreme Right</A>
+<TH><A href="#PREDICATEExtreme Up">Extreme Up</A>
+<TH><A href="#PREDICATEMRUN">MRUN</A>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+</TR>
+<TR CLASS=illegal>
+<TD>false
+<TD>-----
+<TD>-----
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTStart Header">Start Header</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTStart Header">Start Header</A>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+</TABLE>
+<A href="#STIMT1"><H3>Stimulus: T1, Timer 10 sec</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="4">Initial State
+<TH colspan="5">Predicates
+<TH rowspan="2">Response
+<TH colspan="4">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+<TH><A href="#PREDICATEExtreme Down">Extreme Down</A>
+<TH><A href="#PREDICATEExtreme Left">Extreme Left</A>
+<TH><A href="#PREDICATEExtreme Right">Extreme Right</A>
+<TH><A href="#PREDICATEExtreme Up">Extreme Up</A>
+<TH><A href="#PREDICATEMRUN">MRUN</A>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+</TR>
+<TR CLASS=illegal>
+<TD>false
+<TD>-----
+<TD>-----
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTCool Down Heater">Cool Down Heater</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTCool Down Heater">Cool Down Heater</A>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+</TABLE>
+<A href="#STIMT2"><H3>Stimulus: T2, Timer 2 min</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="4">Initial State
+<TH colspan="5">Predicates
+<TH rowspan="2">Response
+<TH colspan="4">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+<TH><A href="#PREDICATEExtreme Down">Extreme Down</A>
+<TH><A href="#PREDICATEExtreme Left">Extreme Left</A>
+<TH><A href="#PREDICATEExtreme Right">Extreme Right</A>
+<TH><A href="#PREDICATEExtreme Up">Extreme Up</A>
+<TH><A href="#PREDICATEMRUN">MRUN</A>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+</TR>
+<TR CLASS=illegal>
+<TD>false
+<TD>-----
+<TD>-----
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTT_2min_off">T_2min_off</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTT_2min_off">T_2min_off</A>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+</TABLE>
+<A href="#STIMTs"><H3>Stimulus: Ts, Mirror Toggle Switch</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="4">Initial State
+<TH colspan="5">Predicates
+<TH rowspan="2">Response
+<TH colspan="4">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+<TH><A href="#PREDICATEExtreme Down">Extreme Down</A>
+<TH><A href="#PREDICATEExtreme Left">Extreme Left</A>
+<TH><A href="#PREDICATEExtreme Right">Extreme Right</A>
+<TH><A href="#PREDICATEExtreme Up">Extreme Up</A>
+<TH><A href="#PREDICATEMRUN">MRUN</A>
+<TH><A href="#VARIABLECar On">Car On</A>
+<TH><A href="#VARIABLEEngine On">Engine On</A>
+<TH><A href="#VARIABLEHeater State">Heater State</A>
+<TH><A href="#VARIABLEToggle State">Toggle State</A>
+</TR>
+<TR CLASS=illegal>
+<TD>false
+<TD>-----
+<TD>-----
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>false
+<TD>-----
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Ready
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Driver Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>On
+<TD>Passenger Side
+<TR>
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>true
+<TD>true
+<TD>Cooldown
+<TD>Passenger Side
+</TABLE>
+</HTML>

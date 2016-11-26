@@ -1,0 +1,16 @@
+
+<enumeration length='0' xmlns='http://cs.utk.edu/sqrl/pse'>
+  <version id='$Id: $'/>
+  <name value='Security alarm'>A simple software-controlled security alarm</name>
+  <require id='6'>Correct entry of the code deactivates the security alarm.</require>
+  <require id='7'>If a mistake is made when entering the code, the user must press the Clear button before the code can be reentered.</require>
+  <require id='1'>The security alarm has a detector that sends a trip signal when motion is detected.</require>
+  <require id='2'>The security alarm is activated by pressing the Set button.</require>
+  <require id='3'>The Set button is illuminated when the security alarm is set.</require>
+  <require id='4'>If a trip signal occurs while the security alarm is set, a high-pitched tone (alarm) is emitted.</require>
+  <require id='5'>A three-digit code must be entered to turn off the alarm tone.</require>
+  <map id='lambda'>
+    <prefix id='lambda'/>
+    <response/>
+  </map>
+</enumeration>

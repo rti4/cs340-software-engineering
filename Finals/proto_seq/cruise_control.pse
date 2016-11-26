@@ -1,0 +1,45 @@
+<enumeration length='1' xmlns='http://cs.utk.edu/sqrl/pse'>
+  <version id='$Id: $'/>
+  <name value='Cruise_Control'>Cruise Control Enumeration</name>
+  <interface id='Ignition System'>The system which deals with the components dealing with the starting of the engine.</interface>
+  <interface id='Brake System'>System which controls the brake pads and related components which stop the car.</interface>
+  <interface id='Cruise Control Panel'>The set of cruise control buttons found on the steering wheel column.</interface>
+  <interface id='Fuel Injection System'>Controls the amount of gas sent to the engine.</interface>
+  <interface id='Dashboard'>The enclosure to the set of guages that sit infront of the driver.</interface>
+  <output id='e_decelerate' lname='decelerate'><interfaceref id='Fuel Injection System'/>
+  </output>
+  <output id='c_light_deactivate' lname='turn off cruise control light'><interfaceref id='Dashboard'/>
+  </output>
+  <output id='e_accelerate' lname='accelerate'><interfaceref id='Fuel Injection System'/>
+  </output>
+  <output id='c_light_activate' lname='turn on cruise control light'><interfaceref id='Dashboard'/>
+  </output>
+  <stimulus id='c_decr' lname='decrement button'><interfaceref id='Cruise Control Panel'/>
+  </stimulus>
+  <stimulus id='c_active' lname='activate button'><interfaceref id='Cruise Control Panel'/>
+  </stimulus>
+  <stimulus id='i_off' lname='ignition off event'><interfaceref id='Ignition System'/>
+  </stimulus>
+  <stimulus id='b_released' lname='brake pedal released event'><interfaceref id='Brake System'/>
+  </stimulus>
+  <stimulus id='c_incr' lname='increment button'><interfaceref id='Cruise Control Panel'/>
+  </stimulus>
+  <stimulus id='a_pressed' lname='accelerator pedal pressed event'><interfaceref id='Fuel Injection System'/>
+  </stimulus>
+  <stimulus id='d_speed_value' lname='speed value'><interfaceref id='Dashboard'/>
+  </stimulus>
+  <stimulus id='a_released' lname='accelerator pedal released event'><interfaceref id='Fuel Injection System'/>
+  </stimulus>
+  <stimulus id='b_pressed' lname='brake pedal pressed event'><interfaceref id='Brake System'/>
+  </stimulus>
+  <stimulus id='c_resume' lname='resume button'><interfaceref id='Cruise Control Panel'/>
+  </stimulus>
+  <stimulus id='i_on' lname='ignition on event'><interfaceref id='Ignition System'/>
+  </stimulus>
+  <predicate id='curr_speed_too_low'>actual speed &lt; speed_to_be_maintained</predicate>
+  <map id='lambda'>
+    <prefix id='lambda'/>
+    <response/>
+  </map>
+  <canonical_sequence_map id='lambda'/>
+</enumeration>

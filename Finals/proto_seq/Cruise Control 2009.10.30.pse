@@ -1,0 +1,122 @@
+<enumeration length='1' xmlns='http://cs.utk.edu/sqrl/pse'>
+  <version id='$Id: $'/>
+  <name value='Cruise_Control'>Cruise Control Enumeration</name>
+  <require id='R2'>The cruise control system can be activated only if the car is traveling at least 60 km/hr and if the brake is not being pressed. </require>
+  <require id='R3'>An active cruise control system is automatically deactivated if the driver engages the brake (presumably to react to road or traffic conditions), or the accelerator pedal</require>
+  <require id='R4'>The driver can resume a deactivated cruise control system. </require>
+  <require id='D1'>If in cruise mode, pressing the accelerator puts cruise control in passive mode</require>
+  <require id='R5'>The system terminates when the car&apos;s ignition is turned off.
+
+</require>
+  <require id='D2'>If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard</require>
+  <require id='R6'>The speed-to-be-maintained is initially the current speed of the vehicle when cruise control is activated.</require>
+  <require id='D3'>if in passive mode, releasing the accelator takes cruise control out of passive mode</require>
+  <require id='R7'>if the system is deactivated. When cruise control Is resumed, the speed-to-be-maintained will be whatever value it was when the cruise control system was last active. The command to resume cruise control will succeed only if the break pedal is not being pressed.
+
+</require>
+  <require id='R8'>When cruise control is activated, a red indication light is turned on, and the cruise speed is displayed on the dashboard.
+</require>
+  <require id='R1'>When active, the system keeps the vehicle traveling steadily at the driver-specified high speed, without the driver having to keep his foot on the accelerator pedal. </require>
+  <interface id='Ignition System'>The system which deals with the components dealing with the starting of the engine.</interface>
+  <interface id='Cruise Control Panel'>The set of cruise control buttons found on the steering wheel column.</interface>
+  <interface id='Brake System'>System which controls the brake pads and related components which stop the car.</interface>
+  <interface id='Fuel Injection System'>Controls the amount of gas sent to the engine.</interface>
+  <interface id='Dashboard'>The enclosure to the set of guages that sit infront of the driver.</interface>
+  <output id='e_decelerate' lname='decelerate'>
+  <interfaceref id='Fuel Injection System'/>
+  </output>
+  <output id='STBM' lname='set speed-to-be-maintained'>set speed to be maintained<trace id='R1'/>
+    <trace id='R2'/>
+    <trace id='R8'/>
+    <interfaceref id='Cruise Control Panel'/>
+  </output>
+  <output id='inc_cc_speed' lname='Increase Cruise Control Speed'>This increase the speed to be maintained by 1 kph<interfaceref id='Cruise Control Panel'/>
+  </output>
+  <output id='c_light_deactivate' lname='turn off cruise control light'>
+  <interfaceref id='Dashboard'/>
+  </output>
+  <output id='clear_cc_speed' lname='Clear Cruise Control Speed'>Clears the cruise control speed whenever the system is deactived<trace id='D2'/>
+    <interfaceref id='Dashboard'/>
+  </output>
+  <output id='display_cc_speed' lname='Display Cruise Control Speed'>display the current cruise control speed on the dashboard<trace id='R8'/>
+    <interfaceref id='Dashboard'/>
+  </output>
+  <output id='e_accelerate' lname='accelerate'>
+  <interfaceref id='Fuel Injection System'/>
+  </output>
+  <output id='c_light_activate' lname='turn on cruise control light'>
+  <interfaceref id='Dashboard'/>
+  </output>
+  <output id='RSTBM' lname='Restore Speed-to-be-maintained'>Restores the speed to be maintained by setting cc_speed to last cc_speed stored.<trace id='R7'/>
+    <interfaceref id='Cruise Control Panel'/>
+  </output>
+  <output id='dec_cc_speed' lname='Decrease Cruise Control Speed'>This decrease the speed to be maintained by 1 kph<interfaceref id='Cruise Control Panel'/>
+  </output>
+  <output id='curr_cc_speed' lname='Current Cruise Control Speed'>Sets the current cruise control speed<trace id='R6'/>
+    <interfaceref id='Cruise Control Panel'/>
+  </output>
+  <stimulus id='c_decr' lname='decrement button'>used when cruise control is active to decrement the speed-to-be-maintained.
+<interfaceref id='Cruise Control Panel'/>
+  </stimulus>
+  <stimulus id='c_active' lname='activate button'>used to activate cruise control.  <trace id='R2'/>
+    <trace id='R6'/>
+    <trace id='R8'/>
+    <interfaceref id='Cruise Control Panel'/>
+  </stimulus>
+  <stimulus id='i_off' lname='ignition off event'>an event indicating that the driver has stopped pressing the accelerator pedal
+<interfaceref id='Ignition System'/>
+  </stimulus>
+  <stimulus id='b_released' lname='brake pedal released event'>an event indicating that the driver has stopped pressing the brake pedal.
+<interfaceref id='Brake System'/>
+  </stimulus>
+  <stimulus id='c_incr' lname='increment button'>used when cruise control is active to increment the speed-to-be-maintained<interfaceref id='Cruise Control Panel'/>
+  </stimulus>
+  <stimulus id='d_speed_value' lname='speed value'>an event communicating the current speed of the car<trace id='R1'/>
+    <interfaceref id='Dashboard'/>
+  </stimulus>
+  <stimulus id='a_pressed' lname='accelerator pedal pressed event'>an event indicating that the driver has pressed the accelerator pedal
+<trace id='D1'/>
+    <interfaceref id='Fuel Injection System'/>
+  </stimulus>
+  <stimulus id='c_resume' lname='resume button'> used to resume cruise control, if the system is deactivated.<trace id='R7'/>
+    <trace id='R4'/>
+    <trace id='R2'/>
+    <trace id='R8'/>
+    <interfaceref id='Cruise Control Panel'/>
+  </stimulus>
+  <stimulus id='b_pressed' lname='brake pedal pressed event'>an event indicating that the driver has pressed the brake pedal.
+<interfaceref id='Brake System'/>
+  </stimulus>
+  <stimulus id='a_released' lname='accelerator pedal released event'> an event indicating that the driver has stopped pressing the accelerator pedal
+<trace id='R1'/>
+    <trace id='D3'/>
+    <interfaceref id='Fuel Injection System'/>
+  </stimulus>
+  <stimulus id='i_on' lname='ignition on event'>an event indicating that the driver has stopped pressing the accelerator pedal
+<interfaceref id='Ignition System'/>
+  </stimulus>
+  <response id='activate cc_system'>
+    <output id='c_light_activate'/>
+    <output id='STBM'/>
+    <output id='display_cc_speed'/>
+  </response>
+  <response id='clear/reset/deactive cc_system'>
+    <output id='clear_cc_speed'/>
+    <output id='c_light_deactivate'/>
+  </response>
+  <response id='put_cc_in_passivemode'>
+    <output id='STBM'/>
+  </response>
+  <response id='resume_cc'>
+    <output id='RSTBM'/>
+  </response>
+  <predicate id='curr_speed_too_high'>actual speed &gt; speed_to_be_maintained</predicate>
+  <predicate id='curr_speed_too_low'>actual speed &lt; speed_to_be_maintained</predicate>
+  <predicate id='permit_cc'>curr_speed &gt; 60 kph<trace id='R2'/>
+  </predicate>
+  <map id='lambda'>
+    <prefix id='lambda'/>
+    <response/>
+  </map>
+  <canonical_sequence_map id='lambda'/>
+</enumeration>

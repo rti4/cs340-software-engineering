@@ -1,0 +1,1210 @@
+
+<enumeration length='6' xmlns='http://cs.utk.edu/sqrl/pse'>
+  <version id='$Id: $'/>
+  <name value='Driver Side ECU'>This is the enumeration for a Driver Side ECU.</name>
+  <require id='R2'>The driver side ECU initilizes when the car key is in start position.</require>
+  <require id='R3'>Each mirror can be adjusted in in the veritcal and has extreme up and down  positions.  Each mirror can be adjusted in the horizontal positions and has extreme positions.</require>
+  <require id='D0'>Prior to the car being started, the Driver Side ECU is inactive, therefore all signals to the Driver Side ECU other than the engine start signal (S) is ignored.</require>
+  <require id='R4'>If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.</require>
+  <require id='D1'>Any car start signal recieved after the initial car start signal will act as a ECU reset.</require>
+  <require id='R5'>The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.</require>
+  <require id='D2'>When the mirror is toggled for the Passenger Side Mirror, the mirror adjustment signals, are forwarded to the Passenger Side ECU via the CAN bus.</require>
+  <require id='R6'>Engine has to be running when mirror heating is used.</require>
+  <require id='D3'>The state of the ECU must be updated if the state of the engine changes.</require>
+  <require id='R7'>The engine state information is sent via the MRUN signal (MRUN = 1 when engine is on).</require>
+  <require id='D4'>Extraneous temperature and timer signals are ignored.</require>
+  <require id='R1'>There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.</require>
+  <interface id='Mirror Adjustment Panel'>This panel houses is located next to the steering wheel and it houses the mirror adjustment stick and the mirror toggle switch.<trace id='R1'/>
+  </interface>
+  <interface id='CAN Bus'>Central commication header for all the different Electronic Controlling Units in the vehicle.<trace id='R4'/>
+  </interface>
+  <interface id='Driver Side Mirror'>This components includes the mirror, the mirror motor, the mirror heater coil, extreme up/down/left/right postition sensors, and two timers.<trace id='D2'/>
+  </interface>
+  <output id='MD' lname='Move the Mirror Down'>Angles the Mirror Downward<trace id='R3'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='T_10sec_Off' lname='Turn off 10 sec Timer '>Turns off the 10 second timer.<trace id='R5'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='MR' lname='Move the Mirror Right'>Rotates the Mirror Rightward<trace id='R3'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='T_2min_off' lname='Turn off 2 min Timer '>Turns off 2 minute timer.<trace id='R5'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='T_10sec_On' lname='Turn on 10 sec Timer '>Turns on the 10 second timer.<trace id='R5'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='FwdSignal' lname='Forward Signal'>Forwards the last signal recieved to the passenger side ECU via the CAN bus.<trace id='D2'/>
+    <interfaceref id='CAN Bus'/>
+  </output>
+  <output id='HOff' lname='Heater Off'>Turns off the car mirror heater.<trace id='R5'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='HOn' lname='Heater On'>Turns on the car mirror heater.<trace id='R5'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='MU' lname='Move the Mirror up'>Angles the Mirror Upwards<trace id='R3'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='T_2min_on' lname='Turn on 2 min Timer '>Turns on 2 minute timer.<trace id='R5'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='ML' lname='Move the Mirror Left'>Rotates the Mirror Leftward<trace id='R3'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='MirrorErr' lname='Mirror Error'>Sends an error message to the CAS bus.<trace id='R4'/>
+    <interfaceref id='CAN Bus'/>
+  </output>
+  <stimulus id='MD' lname='Mirror Down'>Signal received when the user presses the adjustment joystick down. <trace id='R3'/>
+    <interfaceref id='Mirror Adjustment Panel'/>
+  </stimulus>
+  <stimulus id='MR' lname='Mirror Right'>Signal received when the user presses the adjustment joystick right. <trace id='R3'/>
+    <interfaceref id='Mirror Adjustment Panel'/>
+  </stimulus>
+  <stimulus id='T1' lname='Timer 10 sec'>Signal sent when 10 seconds has passed on the 10 second timer.<trace id='R5'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </stimulus>
+  <stimulus id='R' lname='MRUN'>A signal which is triggered when the state of the system is changed.<trace id='D3'/>
+    <interfaceref id='CAN Bus'/>
+  </stimulus>
+  <stimulus id='MU' lname='Mirror Up'>Signal received when the user presses the adjustment joystick up. <trace id='R3'/>
+    <interfaceref id='Mirror Adjustment Panel'/>
+  </stimulus>
+  <stimulus id='T2' lname='Timer 2 min'>Signal sent when 2 minutes has passed on the 2 minute timer.<trace id='R5'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </stimulus>
+  <stimulus id='S' lname='Engine Start'>This signal is generated when the car has been started.<trace id='R2'/>
+    <interfaceref id='CAN Bus'/>
+  </stimulus>
+  <stimulus id='ML' lname='Mirror Left'>Signal received when the user presses the adjustment joystick left. <trace id='R3'/>
+    <interfaceref id='Mirror Adjustment Panel'/>
+  </stimulus>
+  <stimulus id='T' lname='Temperature'>A alarm signal which is triggered when the temperature of the mirror is less than or equal to 2 degree celcius.<trace id='R5'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </stimulus>
+  <stimulus id='Ts' lname='Mirror Toggle Switch'>This switch is used to set which mirror is controlled by the Mirror adjustment joystick.  A signal is sent whenever the position on the switch changes.<trace id='R1'/>
+    <interfaceref id='Mirror Adjustment Panel'/>
+  </stimulus>
+  <response id='Start Header'>
+    <output id='T_10sec_On'/>
+    <output id='HOn'/>
+  </response>
+  <response id='Cool Down Heater'>
+    <output id='T_10sec_Off'/>
+    <output id='T_2min_on'/>
+    <output id='HOff'/>
+  </response>
+  <response id='Reset ECU'>
+    <output id='HOff'/>
+    <output id='T_10sec_Off'/>
+    <output id='T_2min_off'/>
+  </response>
+  <predicate id='Extreme Down'>Mirror has reached the extreme down position. All downward inputs will be
+ignored<trace id='R4'/>
+  </predicate>
+  <predicate id='Extreme Right'>Mirror has reached the extreme right position. All rightward inputs will be
+ignored<trace id='R4'/>
+  </predicate>
+  <predicate id='Extreme Up'>Mirror has reached the extreme up position. All upward inputs will be
+ignored<trace id='R4'/>
+  </predicate>
+  <predicate id='MRUN'>false if the engine if off
+true if the engine is running<trace id='R7'/>
+  </predicate>
+  <predicate id='Extreme Left'>Mirror has reached the extreme left position. All leftward inputs will be
+ignored<trace id='R4'/>
+  </predicate>
+  <map id='lambda'>
+    <prefix id='lambda'/>
+    <response/>
+  </map>
+  <map id='MD'>
+    <prefix id='lambda'/>
+    <stimulus id='MD'/>
+    <trace id='D0'/>
+    <response output='illegal'/>
+  </map>
+  <map id='ML'>
+    <prefix id='lambda'/>
+    <stimulus id='ML'/>
+    <trace id='D0'/>
+    <response output='illegal'/>
+  </map>
+  <map id='MR'>
+    <prefix id='lambda'/>
+    <stimulus id='MR'/>
+    <trace id='D0'/>
+    <response output='illegal'/>
+  </map>
+  <map id='MU'>
+    <prefix id='lambda'/>
+    <stimulus id='MU'/>
+    <trace id='D0'/>
+    <response output='illegal'/>
+  </map>
+  <map id='R'>
+    <prefix id='lambda'/>
+    <stimulus id='R'/>
+    <trace id='D0'/>
+    <response output='illegal'/>
+  </map>
+  <map id='S'>
+    <prefix id='lambda'/>
+    <stimulus id='S'/>
+    <trace id='R2'/>
+    <response/>
+  </map>
+  <map id='T'>
+    <prefix id='lambda'/>
+    <stimulus id='T'/>
+    <trace id='D0'/>
+    <response output='illegal'/>
+  </map>
+  <map id='T1'>
+    <prefix id='lambda'/>
+    <stimulus id='T1'/>
+    <trace id='D0'/>
+    <response output='illegal'/>
+  </map>
+  <map id='T2'>
+    <prefix id='lambda'/>
+    <stimulus id='T2'/>
+    <trace id='D0'/>
+    <response output='illegal'/>
+  </map>
+  <map id='Ts'>
+    <prefix id='lambda'/>
+    <stimulus id='Ts'/>
+    <trace id='D0'/>
+    <response output='illegal'/>
+  </map>
+  <map id='S.MD&lt;Extreme Down()=false&gt;'>
+    <prefix id='S'/>
+    <stimulus id='MD'>
+      <predicate id='Extreme Down' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='MD'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.MD&lt;Extreme Down()=true&gt;'>
+    <prefix id='S'/>
+    <stimulus id='MD'>
+      <predicate id='Extreme Down' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.ML&lt;Extreme Left()=false&gt;'>
+    <prefix id='S'/>
+    <stimulus id='ML'>
+      <predicate id='Extreme Left' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='ML'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.ML&lt;Extreme Left()=true&gt;'>
+    <prefix id='S'/>
+    <stimulus id='ML'>
+      <predicate id='Extreme Left' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.MR&lt;Extreme Right()=false&gt;'>
+    <prefix id='S'/>
+    <stimulus id='MR'>
+      <predicate id='Extreme Right' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='MR'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.MR&lt;Extreme Right()=true&gt;'>
+    <prefix id='S'/>
+    <stimulus id='MR'>
+      <predicate id='Extreme Right' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.MU&lt;Extreme Up()=false&gt;'>
+    <prefix id='S'/>
+    <stimulus id='MU'>
+      <predicate id='Extreme Up' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='MU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.MU&lt;Extreme Up()=true&gt;'>
+    <prefix id='S'/>
+    <stimulus id='MU'>
+      <predicate id='Extreme Up' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.R&lt;MRUN()=false&gt;'>
+    <prefix id='S'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='false'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;'>
+    <prefix id='S'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='true'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response/>
+  </map>
+  <map id='S.S'>
+    <prefix id='S'/>
+    <stimulus id='S'/>
+    <trace id='D1'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.T'>
+    <prefix id='S'/>
+    <stimulus id='T'/>
+    <trace id='R6'/>
+    <response/>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.T1'>
+    <prefix id='S'/>
+    <stimulus id='T1'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.T2'>
+    <prefix id='S'/>
+    <stimulus id='T2'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.Ts'>
+    <prefix id='S'/>
+    <stimulus id='Ts'/>
+    <trace id='R1'/>
+    <response/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.MD&lt;Extreme Down()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='MD'>
+      <predicate id='Extreme Down' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='MD'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.MD&lt;Extreme Down()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='MD'>
+      <predicate id='Extreme Down' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.ML&lt;Extreme Left()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='ML'>
+      <predicate id='Extreme Left' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='ML'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.ML&lt;Extreme Left()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='ML'>
+      <predicate id='Extreme Left' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.MR&lt;Extreme Right()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='MR'>
+      <predicate id='Extreme Right' value='false'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MR'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.MR&lt;Extreme Right()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='MR'>
+      <predicate id='Extreme Right' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.MU&lt;Extreme Up()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='MU'>
+      <predicate id='Extreme Up' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='MU'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.MU&lt;Extreme Up()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='MU'>
+      <predicate id='Extreme Up' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.R&lt;MRUN()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='false'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.R&lt;MRUN()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='true'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.S'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='S'/>
+    <trace id='D1'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='T'/>
+    <trace id='R5'/>
+    <response>
+      <response id='Start Header'/>
+    </response>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T1'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='T1'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T2'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='T2'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.Ts'>
+    <prefix id='S.R&lt;MRUN()=true&gt;'/>
+    <stimulus id='Ts'/>
+    <trace id='R1'/>
+    <response/>
+  </map>
+  <map id='S.Ts.MD'>
+    <prefix id='S.Ts'/>
+    <stimulus id='MD'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.Ts'/>
+  </map>
+  <map id='S.Ts.ML'>
+    <prefix id='S.Ts'/>
+    <stimulus id='ML'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.Ts.MR'>
+    <prefix id='S.Ts'/>
+    <stimulus id='MR'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.Ts'/>
+  </map>
+  <map id='S.Ts.MU'>
+    <prefix id='S.Ts'/>
+    <stimulus id='MU'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.Ts'/>
+  </map>
+  <map id='S.Ts.R&lt;MRUN()=false&gt;'>
+    <prefix id='S.Ts'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='false'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S.Ts'/>
+  </map>
+  <map id='S.Ts.R&lt;MRUN()=true&gt;'>
+    <prefix id='S.Ts'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='true'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.Ts.S'>
+    <prefix id='S.Ts'/>
+    <stimulus id='S'/>
+    <trace id='D1'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.Ts.T'>
+    <prefix id='S.Ts'/>
+    <stimulus id='T'/>
+    <trace id='R6'/>
+    <response/>
+    <equivalent id='S.Ts'/>
+  </map>
+  <map id='S.Ts.T1'>
+    <prefix id='S.Ts'/>
+    <stimulus id='T1'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.Ts'/>
+  </map>
+  <map id='S.Ts.T2'>
+    <prefix id='S.Ts'/>
+    <stimulus id='T2'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.Ts'/>
+  </map>
+  <map id='S.Ts.Ts'>
+    <prefix id='S.Ts'/>
+    <stimulus id='Ts'/>
+    <trace id='R1'/>
+    <response/>
+    <equivalent id='S.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.MD&lt;Extreme Down()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='MD'>
+      <predicate id='Extreme Down' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='MD'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.MD&lt;Extreme Down()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='MD'>
+      <predicate id='Extreme Down' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.ML&lt;Extreme Left()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='ML'>
+      <predicate id='Extreme Left' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='ML'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.ML&lt;Extreme Left()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='ML'>
+      <predicate id='Extreme Left' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.MR&lt;Extreme Right()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='MR'>
+      <predicate id='Extreme Right' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='MR'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.MR&lt;Extreme Right()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='MR'>
+      <predicate id='Extreme Right' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.MU&lt;Extreme Up()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='MU'>
+      <predicate id='Extreme Up' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='MU'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.MU&lt;Extreme Up()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='MU'>
+      <predicate id='Extreme Up' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.R&lt;MRUN()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='false'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.R&lt;MRUN()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='true'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.S'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='S'/>
+    <trace id='D1'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='T'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='T1'/>
+    <trace id='R5'/>
+    <response>
+      <response id='Cool Down Heater'/>
+    </response>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T2'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='T2'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.Ts'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T'/>
+    <stimulus id='Ts'/>
+    <trace id='R1'/>
+    <response/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.Ts.MD'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.Ts'/>
+    <stimulus id='MD'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.Ts.ML'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.Ts'/>
+    <stimulus id='ML'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.Ts.MR'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.Ts'/>
+    <stimulus id='MR'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.Ts.MU'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.Ts'/>
+    <stimulus id='MU'/>
+    <trace id='D3'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.Ts.R&lt;MRUN()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.Ts'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='false'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.Ts.R&lt;MRUN()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.Ts'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='true'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.Ts.S'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.Ts'/>
+    <stimulus id='S'/>
+    <trace id='D1'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.Ts.T'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.Ts'/>
+    <stimulus id='T'/>
+    <trace id='R5'/>
+    <response>
+      <response id='Start Header'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.Ts.T1'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.Ts'/>
+    <stimulus id='T1'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.Ts.T2'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.Ts'/>
+    <stimulus id='T2'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.Ts.Ts'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.Ts'/>
+    <stimulus id='Ts'/>
+    <trace id='R1'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.MD&lt;Extreme Down()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='MD'>
+      <predicate id='Extreme Down' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='MD'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.MD&lt;Extreme Down()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='MD'>
+      <predicate id='Extreme Down' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.ML&lt;Extreme Left()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='ML'>
+      <predicate id='Extreme Left' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='ML'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.ML&lt;Extreme Left()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='ML'>
+      <predicate id='Extreme Left' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.MR&lt;Extreme Right()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='MR'>
+      <predicate id='Extreme Right' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='MR'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.MR&lt;Extreme Right()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='MR'>
+      <predicate id='Extreme Right' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.MU&lt;Extreme Up()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='MU'>
+      <predicate id='Extreme Up' value='false'/>
+    </stimulus>
+    <trace id='R3'/>
+    <response>
+      <output id='MU'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.MU&lt;Extreme Up()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='MU'>
+      <predicate id='Extreme Up' value='true'/>
+    </stimulus>
+    <trace id='R4'/>
+    <response>
+      <output id='MirrorErr'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.R&lt;MRUN()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='false'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.R&lt;MRUN()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='true'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.S'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='S'/>
+    <trace id='D1'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.T'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='T'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.T1'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='T1'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.T2'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='T2'/>
+    <trace id='R5'/>
+    <response>
+      <output id='T_2min_off'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1'/>
+    <stimulus id='Ts'/>
+    <trace id='R1'/>
+    <response/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.Ts.MD'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+    <stimulus id='MD'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.Ts.ML'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+    <stimulus id='ML'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.Ts.MR'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+    <stimulus id='MR'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.Ts.MU'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+    <stimulus id='MU'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.Ts.R&lt;MRUN()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='false'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.Ts.R&lt;MRUN()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='true'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.Ts.S'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+    <stimulus id='S'/>
+    <trace id='D1'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.Ts.T'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+    <stimulus id='T'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.Ts.T1'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+    <stimulus id='T1'/>
+    <trace id='R5'/>
+    <response>
+      <response id='Cool Down Heater'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.Ts.T2'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+    <stimulus id='T2'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.Ts.Ts'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+    <stimulus id='Ts'/>
+    <trace id='R1'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts.MD'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+    <stimulus id='MD'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts.ML'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+    <stimulus id='ML'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts.MR'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+    <stimulus id='MR'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts.MU'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+    <stimulus id='MU'/>
+    <trace id='D2'/>
+    <response>
+      <output id='FwdSignal'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts.R&lt;MRUN()=false&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='false'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts.R&lt;MRUN()=true&gt;'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+    <stimulus id='R'>
+      <predicate id='MRUN' value='true'/>
+    </stimulus>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts.S'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+    <stimulus id='S'/>
+    <trace id='D1'/>
+    <response>
+      <response id='Reset ECU'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts.T'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+    <stimulus id='T'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts.T1'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+    <stimulus id='T1'/>
+    <trace id='D4'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts.T2'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+    <stimulus id='T2'/>
+    <trace id='R5'/>
+    <response>
+      <output id='T_2min_off'/>
+    </response>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.Ts'/>
+  </map>
+  <map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts.Ts'>
+    <prefix id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+    <stimulus id='Ts'/>
+    <trace id='R1'/>
+    <response/>
+    <equivalent id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'/>
+  </map>
+  <state_variable id='Car On'>State of the ignition system<possible_value>-----</possible_value>
+    <possible_value>true</possible_value>
+    <possible_value>false</possible_value>
+  </state_variable>
+  <state_variable id='Engine On'>State of the engine<possible_value>-----</possible_value>
+    <possible_value>true</possible_value>
+    <possible_value>false</possible_value>
+  </state_variable>
+  <state_variable id='Toggle State'>State of the toggle switch.<possible_value>Passenger Side</possible_value>
+    <possible_value>-----</possible_value>
+    <possible_value>Driver Side</possible_value>
+  </state_variable>
+  <state_variable id='Heater State'>State of the mirror heater.<possible_value>Cooldown</possible_value>
+    <possible_value>-----</possible_value>
+    <possible_value>Ready</possible_value>
+    <possible_value>On</possible_value>
+  </state_variable>
+  <canonical_sequence_map id='S.R&lt;MRUN()=true&gt;.T.T1.Ts'>
+    <state_variable id='Car On'>true</state_variable>
+    <state_variable id='Engine On'>true</state_variable>
+    <state_variable id='Heater State'>Cooldown</state_variable>
+    <state_variable id='Toggle State'>Passenger Side</state_variable>
+  </canonical_sequence_map>
+  <canonical_sequence_map id='S.R&lt;MRUN()=true&gt;.T.T1'>
+    <state_variable id='Car On'>true</state_variable>
+    <state_variable id='Engine On'>true</state_variable>
+    <state_variable id='Heater State'>Cooldown</state_variable>
+    <state_variable id='Toggle State'>Driver Side</state_variable>
+  </canonical_sequence_map>
+  <canonical_sequence_map id='S.Ts'>
+    <state_variable id='Car On'>true</state_variable>
+    <state_variable id='Engine On'>false</state_variable>
+    <state_variable id='Heater State'>-----</state_variable>
+    <state_variable id='Toggle State'>Passenger Side</state_variable>
+  </canonical_sequence_map>
+  <canonical_sequence_map id='S.R&lt;MRUN()=true&gt;.Ts'>
+    <state_variable id='Car On'>true</state_variable>
+    <state_variable id='Engine On'>true</state_variable>
+    <state_variable id='Heater State'>Ready</state_variable>
+    <state_variable id='Toggle State'>Passenger Side</state_variable>
+  </canonical_sequence_map>
+  <canonical_sequence_map id='S.R&lt;MRUN()=true&gt;'>
+    <state_variable id='Car On'>true</state_variable>
+    <state_variable id='Engine On'>true</state_variable>
+    <state_variable id='Heater State'>Ready</state_variable>
+    <state_variable id='Toggle State'>Driver Side</state_variable>
+  </canonical_sequence_map>
+  <canonical_sequence_map id='S.R&lt;MRUN()=true&gt;.T.Ts'>
+    <state_variable id='Car On'>true</state_variable>
+    <state_variable id='Engine On'>true</state_variable>
+    <state_variable id='Heater State'>On</state_variable>
+    <state_variable id='Toggle State'>Passenger Side</state_variable>
+  </canonical_sequence_map>
+  <canonical_sequence_map id='lambda'>
+    <state_variable id='Car On'>false</state_variable>
+    <state_variable id='Engine On'>-----</state_variable>
+    <state_variable id='Heater State'>-----</state_variable>
+    <state_variable id='Toggle State'>-----</state_variable>
+  </canonical_sequence_map>
+  <canonical_sequence_map id='S.R&lt;MRUN()=true&gt;.T'>
+    <state_variable id='Car On'>true</state_variable>
+    <state_variable id='Engine On'>true</state_variable>
+    <state_variable id='Heater State'>On</state_variable>
+    <state_variable id='Toggle State'>Driver Side</state_variable>
+  </canonical_sequence_map>
+  <canonical_sequence_map id='S'>
+    <state_variable id='Car On'>true</state_variable>
+    <state_variable id='Engine On'>false</state_variable>
+    <state_variable id='Heater State'>-----</state_variable>
+    <state_variable id='Toggle State'>Driver Side</state_variable>
+  </canonical_sequence_map>
+</enumeration>

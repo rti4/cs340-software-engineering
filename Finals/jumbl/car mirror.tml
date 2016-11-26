@@ -1,0 +1,63 @@
+// Usage model for Car Mirror
+//
+// A use of the security alarm starts with the device being idle,
+// and ends with the entering of a correct combination entry.
+// The light has to go from off to on to off for any possible use
+// of the alarm.
+
+($ fill (1) $)
+
+model Car Mirror
+	[lambda]
+		"start" [start]
+	[start]
+		"Up" [start]
+		"Down" [start]
+		"Left" [start]
+		"Right" [start]
+		"MRUN=0" [start]
+		"MRUN=1" [mrun=1]
+		"Temp" [start]
+		"Tg" [start.tg]
+		"tm1" [start]
+		"tm2" [start]
+		"start" [exit]
+	[start.tg]
+		"Up" [start.tg]
+		"Down" [start.tg]
+		"Left" [start.tg]
+		"Right" [start.tg]
+		"MRUN=0" [start.tg]
+		"MRUN=1" [start.mrun=1.tg]
+		"Temp" [start.tg]
+		"Tg" [start]
+		"tm1" [start.tg]
+		"tm2" [start.tg]
+		"start" [exit]
+	[start.mrun=1.tg]
+		"Up" [start.mrun=1.tg]
+		"Down" [start.mrun=1.tg]
+		"Left" [start.mrun=1.tg]
+		"Right" [start.mrun=1.tg]
+		"MRUN=0" [start.tg]
+		"MRUN=1" [start.mrun=1.tg]
+		"Temp" [start.mrun=1.t.tg]
+		"Tg" [start.mrun=1]
+		"tm1" [start.mrun=1.tg]
+		"tm2" [start.mrun=1.tg]
+		"start" [exit]
+	[start.mrun=1.t.tg]
+		"Up" [start.mrun=1.t.tg]
+		"Down" [start.mrun=1.t.tg]
+		"Left" [start.mrun=1.t.tg]
+		"Right" [start.mrun=1.t.tg]
+		"MRUN=0" [start]
+		"MRUN=1" [start.mrun=1.t.tg]
+		"Temp" [start.mrun=1.t.tg]
+		"Tg" [start.mrun=1]
+		"start" [exit]
+	[start.mrun=1
+		
+		
+
+		

@@ -1,0 +1,2529 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<HTML>
+<!-- Enumeration -->
+<HEAD>
+<TITLE>Cruise Control 2009.11.5.html, Enumeration</TITLE>
+<link href="proto_seq.css" rel="stylesheet" type="text/css">
+</HEAD>
+<BODY BGCOLOR='white' TEXT='black'
+      LINK='blue' VLINK='blue'
+      ALINK='green'>
+<H1>Cruise_Control</H1>
+<H2>Description</H2>
+Cruise Control Enumeration
+<H2>Version</H2>
+$Id: $
+<H2>Table Of Contents</H2>
+<UL>
+<LI><A href="#REQUIREMENTS">Requirements</A href="#REQUIREMENTS"></LI>
+<LI><A href="#STIMULI">Stimuli</A href="#STIMULI"></LI>
+<LI><A href="#OUTPUTS">Outputs</A href="#OUTPUTS"></LI>
+<LI><A href="#INTERFACES">Interfaces</A href="#INTERFACES"></LI>
+<LI><A href="#NAMEDRESPONSES">Named Responses</A href="#NAMEDRESPONSES"></LI>
+<LI><A href="#PREDICATES">Predicates</A href="#PREDICATES"></LI>
+<LI><A href="#ENUMERATION">Sequence Enumeration</A href="#ENUMERATION"></LI>
+<UL>
+<LI><A href="#LENGTH1">Length 1</A></LI>
+<LI><A href="#LENGTH2">Length 2</A></LI>
+<LI><A href="#LENGTH3">Length 3</A></LI>
+<LI><A href="#LENGTH4">Length 4</A></LI>
+</UL>
+<LI><A href="#VARIABLES">State Variables</A></LI>
+<LI><A href="#CSA">Canonical Sequence Analysis</A></LI>
+<LI><A href="#STATEBOX">State Box Specification</A></LI>
+</UL>
+<H1 id="REQUIREMENTS">Requirements</H1>
+<UL>
+<LI id="REQD10resume"><b>D10resume:</b> A cruise control can only be resumed if it was activated atleast once.</LI>
+<LI id="REQD11"><b>D11:</b> Cruise Control is taken out of passive mode when the accelerator is released.</LI>
+<LI id="REQD12"><b>D12:</b> The cruise control system will only respond to the activate button when the cruise control system if off.</LI>
+<LI id="REQD13"><b>D13:</b> Pressing the CC_DECREMENT button decreases the set cc_speed by 1 kph, and CC_INCREMENT button increments the set cc_speed by 1 kph</LI>
+<LI id="REQD1passive"><b>D1passive:</b> If in cruise mode, pressing the accelerator puts cruise control in passive mode</LI>
+<LI id="REQD2~display"><b>D2~display:</b> If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard</LI>
+<LI id="REQD3~passive"><b>D3~passive:</b> if in passive mode, releasing the accelator takes cruise control out of passive mode</LI>
+<LI id="REQD4caroff"><b>D4caroff:</b> All inputs are non responsive till the car has been started.</LI>
+<LI id="REQD5ccinactive"><b>D5ccinactive:</b> When the cruise control system is off or deactivated, all inputs except c_active or c_resume, which can activate the cruise control system, are ignored. </LI>
+<LI id="REQD6resume"><b>D6resume:</b>  The cruise control can only be resumed by c_resume when the speed-to-be-maintained is set.</LI>
+<LI id="REQD7ccreset"><b>D7ccreset:</b> Once the car has been started, additional ignition starts will act as a cruise control system reset.</LI>
+<LI id="REQD8release"><b>D8release:</b> In cruise control active mode,   the brake release and accelerator release events cause no response.
+In cruise control passive mode, the brake release and accelerator press events cause no response.</LI>
+<LI id="REQD9passive"><b>D9passive:</b> In passive mode, the cruise control system will not try to control the speed of the car since the driver is pressing the accelerator.</LI>
+<LI id="REQR1highspeed"><b>R1highspeed:</b> When active, the system keeps the vehicle traveling steadily at the driver-specified high speed, without the driver having to keep his foot on the accelerator pedal. </LI>
+<LI id="REQR2>50"><b>R2>50:</b> The cruise control system can be activated only if the car is traveling at least 60 km/hr and if the brake is not being pressed. </LI>
+<LI id="REQR3brake"><b>R3brake:</b> An active cruise control system is automatically deactivated if the driver engages the brake (presumably to react to road or traffic conditions), or the accelerator pedal</LI>
+<LI id="REQR4resume"><b>R4resume:</b> The driver can resume a deactivated cruise control system. </LI>
+<LI id="REQR5carOff"><b>R5carOff:</b> The system terminates when the car's ignition is turned off.
+
+</LI>
+<LI id="REQR6ccActive"><b>R6ccActive:</b> The speed-to-be-maintained is initially the current speed of the vehicle when cruise control is activated.</LI>
+<LI id="REQR7deactivate"><b>R7deactivate:</b> if the system is deactivated. When cruise control Is resumed, the speed-to-be-maintained will be whatever value it was when the cruise control system was last active. The command to resume cruise control will succeed only if the brake pedal is not being pressed.
+
+</LI>
+<LI id="REQR8display"><b>R8display:</b> When cruise control is activated, a red indication light is turned on, and the cruise speed is displayed on the dashboard.
+</LI>
+</UL>
+<H1 id="INTERFACES">Interfaces</H1>
+<UL>
+<LI id="INTERFACEBrake System"><b>Brake System</b></LI>
+<UL>
+<LI>Description: System which controls the brake pads and related components which stop the car.</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+<LI id="INTERFACECruise Control Panel"><b>Cruise Control Panel</b></LI>
+<UL>
+<LI>Description: The set of cruise control buttons found on the steering wheel column.</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+<LI id="INTERFACEDashboard"><b>Dashboard</b></LI>
+<UL>
+<LI>Description: The enclosure to the set of guages that sit infront of the driver.</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+<LI id="INTERFACEFuel Injection System"><b>Fuel Injection System</b></LI>
+<UL>
+<LI>Description: Controls the amount of gas sent to the engine.</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+<LI id="INTERFACEIgnition System"><b>Ignition System</b></LI>
+<UL>
+<LI>Description: The system which deals with the components dealing with the starting of the engine.</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+</UL>
+<H1 id="STIMULI">Stimuli</H1>
+<UL>
+<LI id="STIMa_pressed"><b>a_pressed</b></LI>
+<UL>
+<LI>Long Name: accelerator pedal pressed event</LI>
+<LI>Description: an event indicating that the driver has pressed the accelerator pedal
+</LI>
+<LI>Sources: [
+<A href="#INTERFACEFuel Injection System">Fuel Injection System</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQD1passive" title="If in cruise mode, pressing the accelerator puts cruise control in passive mode">D1passive</A>
+]
+</LI>
+</UL>
+<LI id="STIMa_released"><b>a_released</b></LI>
+<UL>
+<LI>Long Name: accelerator pedal released event</LI>
+<LI>Description:  an event indicating that the driver has stopped pressing the accelerator pedal
+</LI>
+<LI>Sources: [
+<A href="#INTERFACEFuel Injection System">Fuel Injection System</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR1highspeed" title="When active, the system keeps the vehicle traveling steadily at the driver-specified high speed, without the driver having to keep his foot on the accelerator pedal. ">R1highspeed</A>
+, 
+<A href="#REQD3~passive" title="if in passive mode, releasing the accelator takes cruise control out of passive mode">D3~passive</A>
+]
+</LI>
+</UL>
+<LI id="STIMb_pressed"><b>b_pressed</b></LI>
+<UL>
+<LI>Long Name: brake pedal pressed event</LI>
+<LI>Description: an event indicating that the driver has pressed the brake pedal.
+</LI>
+<LI>Sources: [
+<A href="#INTERFACEBrake System">Brake System</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+<LI id="STIMb_released"><b>b_released</b></LI>
+<UL>
+<LI>Long Name: brake pedal released event</LI>
+<LI>Description: an event indicating that the driver has stopped pressing the brake pedal.
+</LI>
+<LI>Sources: [
+<A href="#INTERFACEBrake System">Brake System</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+<LI id="STIMc_active"><b>c_active</b></LI>
+<UL>
+<LI>Long Name: activate button</LI>
+<LI>Description: used to activate cruise control.  </LI>
+<LI>Sources: [
+<A href="#INTERFACECruise Control Panel">Cruise Control Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR2>50" title="The cruise control system can be activated only if the car is traveling at least 60 km/hr and if the brake is not being pressed. ">R2>50</A>
+, 
+<A href="#REQR6ccActive" title="The speed-to-be-maintained is initially the current speed of the vehicle when cruise control is activated.">R6ccActive</A>
+, 
+<A href="#REQR8display" title="When cruise control is activated, a red indication light is turned on, and the cruise speed is displayed on the dashboard.
+">R8display</A>
+]
+</LI>
+</UL>
+<LI id="STIMc_decr"><b>c_decr</b></LI>
+<UL>
+<LI>Long Name: decrement button</LI>
+<LI>Description: used when cruise control is active to decrement the speed-to-be-maintained.
+</LI>
+<LI>Sources: [
+<A href="#INTERFACECruise Control Panel">Cruise Control Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+<LI id="STIMc_incr"><b>c_incr</b></LI>
+<UL>
+<LI>Long Name: increment button</LI>
+<LI>Description: used when cruise control is active to increment the speed-to-be-maintained</LI>
+<LI>Sources: [
+<A href="#INTERFACECruise Control Panel">Cruise Control Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+<LI id="STIMc_resume"><b>c_resume</b></LI>
+<UL>
+<LI>Long Name: resume button</LI>
+<LI>Description:  used to resume cruise control, if the system is deactivated.</LI>
+<LI>Sources: [
+<A href="#INTERFACECruise Control Panel">Cruise Control Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR7deactivate" title="if the system is deactivated. When cruise control Is resumed, the speed-to-be-maintained will be whatever value it was when the cruise control system was last active. The command to resume cruise control will succeed only if the brake pedal is not being pressed.
+
+">R7deactivate</A>
+, 
+<A href="#REQR4resume" title="The driver can resume a deactivated cruise control system. ">R4resume</A>
+, 
+<A href="#REQR2>50" title="The cruise control system can be activated only if the car is traveling at least 60 km/hr and if the brake is not being pressed. ">R2>50</A>
+, 
+<A href="#REQR8display" title="When cruise control is activated, a red indication light is turned on, and the cruise speed is displayed on the dashboard.
+">R8display</A>
+]
+</LI>
+</UL>
+<LI id="STIMd_speed_value"><b>d_speed_value</b></LI>
+<UL>
+<LI>Long Name: speed value</LI>
+<LI>Description: an event communicating the current speed of the car</LI>
+<LI>Sources: [
+<A href="#INTERFACEDashboard">Dashboard</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR1highspeed" title="When active, the system keeps the vehicle traveling steadily at the driver-specified high speed, without the driver having to keep his foot on the accelerator pedal. ">R1highspeed</A>
+]
+</LI>
+</UL>
+<LI id="STIMi_off"><b>i_off</b></LI>
+<UL>
+<LI>Long Name: ignition off event</LI>
+<LI>Description: an event indicating that the driver has stopped pressing the accelerator pedal
+</LI>
+<LI>Sources: [
+<A href="#INTERFACEIgnition System">Ignition System</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+<LI id="STIMi_on"><b>i_on</b></LI>
+<UL>
+<LI>Long Name: ignition on event</LI>
+<LI>Description: an event indicating that the driver has stopped pressing the accelerator pedal
+</LI>
+<LI>Sources: [
+<A href="#INTERFACEIgnition System">Ignition System</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+</UL>
+<H1 id="OUTPUTS">Outputs</H1>
+<UL>
+<LI id="OUTPUTRSTBM"><b>RSTBM</b></LI>
+<UL>
+<LI>Long Name: Restore Speed-to-be-maintained</LI>
+<LI>Description: Restores the speed to be maintained by setting cc_speed to last cc_speed stored.</LI>
+<LI>Destinations: [
+<A href="#INTERFACECruise Control Panel">Cruise Control Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR7deactivate" title="if the system is deactivated. When cruise control Is resumed, the speed-to-be-maintained will be whatever value it was when the cruise control system was last active. The command to resume cruise control will succeed only if the brake pedal is not being pressed.
+
+">R7deactivate</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTSTBM"><b>STBM</b></LI>
+<UL>
+<LI>Long Name: set speed-to-be-maintained</LI>
+<LI>Description: set speed to be maintained</LI>
+<LI>Destinations: [
+<A href="#INTERFACECruise Control Panel">Cruise Control Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR1highspeed" title="When active, the system keeps the vehicle traveling steadily at the driver-specified high speed, without the driver having to keep his foot on the accelerator pedal. ">R1highspeed</A>
+, 
+<A href="#REQR2>50" title="The cruise control system can be activated only if the car is traveling at least 60 km/hr and if the brake is not being pressed. ">R2>50</A>
+, 
+<A href="#REQR8display" title="When cruise control is activated, a red indication light is turned on, and the cruise speed is displayed on the dashboard.
+">R8display</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTc_light_activate"><b>c_light_activate</b></LI>
+<UL>
+<LI>Long Name: turn on cruise control light</LI>
+<LI>Description: 
+  </LI>
+<LI>Destinations: [
+<A href="#INTERFACEDashboard">Dashboard</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR8display" title="When cruise control is activated, a red indication light is turned on, and the cruise speed is displayed on the dashboard.
+">R8display</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTc_light_deactivate"><b>c_light_deactivate</b></LI>
+<UL>
+<LI>Long Name: turn off cruise control light</LI>
+<LI>Description: 
+  </LI>
+<LI>Destinations: [
+<A href="#INTERFACEDashboard">Dashboard</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTclear_cc_speed"><b>clear_cc_speed</b></LI>
+<UL>
+<LI>Long Name: Clear Cruise Control Speed</LI>
+<LI>Description: Clears the cruise control speed whenever the system is deactived</LI>
+<LI>Destinations: [
+<A href="#INTERFACEDashboard">Dashboard</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTcurr_cc_speed"><b>curr_cc_speed</b></LI>
+<UL>
+<LI>Long Name: Current Cruise Control Speed</LI>
+<LI>Description: Sets the current cruise control speed</LI>
+<LI>Destinations: [
+<A href="#INTERFACECruise Control Panel">Cruise Control Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR6ccActive" title="The speed-to-be-maintained is initially the current speed of the vehicle when cruise control is activated.">R6ccActive</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTdec_cc_speed"><b>dec_cc_speed</b></LI>
+<UL>
+<LI>Long Name: Decrease Cruise Control Speed</LI>
+<LI>Description: This decrease the speed to be maintained by 1 kph</LI>
+<LI>Destinations: [
+<A href="#INTERFACECruise Control Panel">Cruise Control Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+<LI id="OUTPUTdisplay_cc_speed"><b>display_cc_speed</b></LI>
+<UL>
+<LI>Long Name: Display Cruise Control Speed</LI>
+<LI>Description: display the current cruise control speed on the dashboard</LI>
+<LI>Destinations: [
+<A href="#INTERFACEDashboard">Dashboard</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR8display" title="When cruise control is activated, a red indication light is turned on, and the cruise speed is displayed on the dashboard.
+">R8display</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTe_accelerate"><b>e_accelerate</b></LI>
+<UL>
+<LI>Long Name: accelerate</LI>
+<LI>Description: the system causes the car to accelerate
+  </LI>
+<LI>Destinations: [
+<A href="#INTERFACEFuel Injection System">Fuel Injection System</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR1highspeed" title="When active, the system keeps the vehicle traveling steadily at the driver-specified high speed, without the driver having to keep his foot on the accelerator pedal. ">R1highspeed</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTe_decelerate"><b>e_decelerate</b></LI>
+<UL>
+<LI>Long Name: decelerate</LI>
+<LI>Description: the system causes the car to slow down
+  </LI>
+<LI>Destinations: [
+<A href="#INTERFACEFuel Injection System">Fuel Injection System</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR1highspeed" title="When active, the system keeps the vehicle traveling steadily at the driver-specified high speed, without the driver having to keep his foot on the accelerator pedal. ">R1highspeed</A>
+]
+</LI>
+</UL>
+<LI id="OUTPUTinc_cc_speed"><b>inc_cc_speed</b></LI>
+<UL>
+<LI>Long Name: Increase Cruise Control Speed</LI>
+<LI>Description: This increase the speed to be maintained by 1 kph</LI>
+<LI>Destinations: [
+<A href="#INTERFACECruise Control Panel">Cruise Control Panel</A>
+]</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR1highspeed" title="When active, the system keeps the vehicle traveling steadily at the driver-specified high speed, without the driver having to keep his foot on the accelerator pedal. ">R1highspeed</A>
+]
+</LI>
+</UL>
+</UL>
+<H1 id="NAMEDRESPONSES">Named Responses</H1>
+<UL>
+<LI id="NAMEDRESPONSEactivate cc_system"><b>activate cc_system</b></LI>
+<UL>
+<LI>Outputs: [
+<A href="#OUTPUTc_light_activate">c_light_activate</A>
+, 
+<A href="#OUTPUTSTBM">STBM</A>
+, 
+<A href="#OUTPUTdisplay_cc_speed">display_cc_speed</A>
+]</LI>
+</UL>
+<LI id="NAMEDRESPONSEclear/reset/deactive cc_system"><b>clear/reset/deactive cc_system</b></LI>
+<UL>
+<LI>Outputs: [
+<A href="#OUTPUTclear_cc_speed">clear_cc_speed</A>
+, 
+<A href="#OUTPUTc_light_deactivate">c_light_deactivate</A>
+]</LI>
+</UL>
+<LI id="NAMEDRESPONSEput_cc_in_passivemode"><b>put_cc_in_passivemode</b></LI>
+<UL>
+<LI>Outputs: [
+<A href="#OUTPUTSTBM">STBM</A>
+]</LI>
+</UL>
+<LI id="NAMEDRESPONSEresume_cc"><b>resume_cc</b></LI>
+<UL>
+<LI>Outputs: [
+<A href="#OUTPUTRSTBM">RSTBM</A>
+, 
+<A href="#OUTPUTc_light_activate">c_light_activate</A>
+, 
+<A href="#OUTPUTdisplay_cc_speed">display_cc_speed</A>
+]</LI>
+</UL>
+</UL>
+<H1 id="PREDICATES">Predicates</H1>
+<UL>
+<LI id="PREDICATEcurr_speed_too_low"><b>curr_speed_too_low</b></LI>
+<UL>
+<LI>Description: actual speed < speed_to_be_maintained</LI>
+<LI>Requirement Trace: 
+[
+]
+</LI>
+</UL>
+<LI id="PREDICATEpermit_cc"><b>permit_cc</b></LI>
+<UL>
+<LI>Description: curr_speed > 60 kph</LI>
+<LI>Requirement Trace: 
+[
+<A href="#REQR2>50" title="The cruise control system can be activated only if the car is traveling at least 60 km/hr and if the brake is not being pressed. ">R2>50</A>
+]
+</LI>
+</UL>
+</UL>
+<H1 id="ENUMERATION">Sequence Enumeration</H1>
+
+<H2 id="LENGTH1">Length 1</H2>
+
+<H3 id="lambda">Prefix: 
+
+<A href="#lambda">lambda</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMa_pressed" title="accelerator pedal pressed event">a_pressed</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD4caroff" title="All inputs are non responsive till the car has been started.">D4caroff</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMa_released" title="accelerator pedal released event">a_released</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD4caroff" title="All inputs are non responsive till the car has been started.">D4caroff</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMb_pressed" title="brake pedal pressed event">b_pressed</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD4caroff" title="All inputs are non responsive till the car has been started.">D4caroff</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMb_released" title="brake pedal released event">b_released</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD4caroff" title="All inputs are non responsive till the car has been started.">D4caroff</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_active" title="activate button">c_active</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD4caroff" title="All inputs are non responsive till the car has been started.">D4caroff</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_decr" title="decrement button">c_decr</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD4caroff" title="All inputs are non responsive till the car has been started.">D4caroff</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_incr" title="increment button">c_incr</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD4caroff" title="All inputs are non responsive till the car has been started.">D4caroff</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_resume" title="resume button">c_resume</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD4caroff" title="All inputs are non responsive till the car has been started.">D4caroff</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMd_speed_value" title="speed value">d_speed_value</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD4caroff" title="All inputs are non responsive till the car has been started.">D4caroff</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMi_off" title="ignition off event">i_off</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEclear/reset/deactive cc_system" title="[clear_cc_speed, c_light_deactivate]">clear/reset/deactive cc_system</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#lambda">lambda</A>
+</TD>
+<TD>
+[
+<A href="#REQR5carOff" title="The system terminates when the car's ignition is turned off.
+
+">R5carOff</A>
+, 
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMi_on" title="ignition on event">i_on</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEclear/reset/deactive cc_system" title="[clear_cc_speed, c_light_deactivate]">clear/reset/deactive cc_system</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">------------</A>
+</TD>
+<TD>
+[
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+, 
+<A href="#REQD7ccreset" title="Once the car has been started, additional ignition starts will act as a cruise control system reset.">D7ccreset</A>
+]
+</TD>
+</TR>
+</TABLE>
+
+<H2 id="LENGTH2">Length 2</H2>
+
+<H3 id="i_on">Prefix: 
+
+<A href="#lambda">i_on</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMa_pressed" title="accelerator pedal pressed event">a_pressed</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQD5ccinactive" title="When the cruise control system is off or deactivated, all inputs except c_active or c_resume, which can activate the cruise control system, are ignored. ">D5ccinactive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMa_released" title="accelerator pedal released event">a_released</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQD8release" title="In cruise control active mode,   the brake release and accelerator release events cause no response.
+In cruise control passive mode, the brake release and accelerator press events cause no response.">D8release</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMb_pressed" title="brake pedal pressed event">b_pressed</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQD5ccinactive" title="When the cruise control system is off or deactivated, all inputs except c_active or c_resume, which can activate the cruise control system, are ignored. ">D5ccinactive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMb_released" title="brake pedal released event">b_released</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQD5ccinactive" title="When the cruise control system is off or deactivated, all inputs except c_active or c_resume, which can activate the cruise control system, are ignored. ">D5ccinactive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_active" title="activate button">c_active</A>
+<A href="#PREDICATEpermit_cc" title="curr_speed &gt; 60 kph">&lt;permit_cc() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQR8display" title="When cruise control is activated, a red indication light is turned on, and the cruise speed is displayed on the dashboard.
+">R8display</A>
+, 
+<A href="#REQR6ccActive" title="The speed-to-be-maintained is initially the current speed of the vehicle when cruise control is activated.">R6ccActive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_active" title="activate button">c_active</A>
+<A href="#PREDICATEpermit_cc" title="curr_speed &gt; 60 kph">&lt;permit_cc() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEactivate cc_system" title="[c_light_activate, STBM, display_cc_speed]">activate cc_system</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;">------------</A>
+</TD>
+<TD>
+[
+<A href="#REQR8display" title="When cruise control is activated, a red indication light is turned on, and the cruise speed is displayed on the dashboard.
+">R8display</A>
+, 
+<A href="#REQR6ccActive" title="The speed-to-be-maintained is initially the current speed of the vehicle when cruise control is activated.">R6ccActive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_decr" title="decrement button">c_decr</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQD5ccinactive" title="When the cruise control system is off or deactivated, all inputs except c_active or c_resume, which can activate the cruise control system, are ignored. ">D5ccinactive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_incr" title="increment button">c_incr</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQD5ccinactive" title="When the cruise control system is off or deactivated, all inputs except c_active or c_resume, which can activate the cruise control system, are ignored. ">D5ccinactive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_resume" title="resume button">c_resume</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQD10resume" title="A cruise control can only be resumed if it was activated atleast once.">D10resume</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMd_speed_value" title="speed value">d_speed_value</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQD5ccinactive" title="When the cruise control system is off or deactivated, all inputs except c_active or c_resume, which can activate the cruise control system, are ignored. ">D5ccinactive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMi_off" title="ignition off event">i_off</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEclear/reset/deactive cc_system" title="[clear_cc_speed, c_light_deactivate]">clear/reset/deactive cc_system</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#lambda">lambda</A>
+</TD>
+<TD>
+[
+<A href="#REQR5carOff" title="The system terminates when the car's ignition is turned off.
+
+">R5carOff</A>
+, 
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMi_on" title="ignition on event">i_on</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEclear/reset/deactive cc_system" title="[clear_cc_speed, c_light_deactivate]">clear/reset/deactive cc_system</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+, 
+<A href="#REQD7ccreset" title="Once the car has been started, additional ignition starts will act as a cruise control system reset.">D7ccreset</A>
+]
+</TD>
+</TR>
+</TABLE>
+
+<H2 id="LENGTH3">Length 3</H2>
+
+<H3 id="i_onAAAc_active&lt;permit_cc()=true&gt;">Prefix: 
+
+<A href="#i_on">i_on.c_active&lt;permit_cc()=true&gt;</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMa_pressed" title="accelerator pedal pressed event">a_pressed</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEput_cc_in_passivemode" title="[STBM]">put_cc_in_passivemode</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAa_pressed">------------</A>
+</TD>
+<TD>
+[
+<A href="#REQD1passive" title="If in cruise mode, pressing the accelerator puts cruise control in passive mode">D1passive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMa_released" title="accelerator pedal released event">a_released</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;">i_on.c_active&lt;permit_cc()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQD8release" title="In cruise control active mode,   the brake release and accelerator release events cause no response.
+In cruise control passive mode, the brake release and accelerator press events cause no response.">D8release</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMb_pressed" title="brake pedal pressed event">b_pressed</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEclear/reset/deactive cc_system" title="[clear_cc_speed, c_light_deactivate]">clear/reset/deactive cc_system</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAb_pressed">------------</A>
+</TD>
+<TD>
+[
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+, 
+<A href="#REQR3brake" title="An active cruise control system is automatically deactivated if the driver engages the brake (presumably to react to road or traffic conditions), or the accelerator pedal">R3brake</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMb_released" title="brake pedal released event">b_released</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;">i_on.c_active&lt;permit_cc()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQD8release" title="In cruise control active mode,   the brake release and accelerator release events cause no response.
+In cruise control passive mode, the brake release and accelerator press events cause no response.">D8release</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_active" title="activate button">c_active</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;">i_on.c_active&lt;permit_cc()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQD12" title="The cruise control system will only respond to the activate button when the cruise control system if off.">D12</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_decr" title="decrement button">c_decr</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;">i_on.c_active&lt;permit_cc()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQD13" title="Pressing the CC_DECREMENT button decreases the set cc_speed by 1 kph, and CC_INCREMENT button increments the set cc_speed by 1 kph">D13</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_incr" title="increment button">c_incr</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD5ccinactive" title="When the cruise control system is off or deactivated, all inputs except c_active or c_resume, which can activate the cruise control system, are ignored. ">D5ccinactive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_resume" title="resume button">c_resume</A>
+</TD>
+<TD>
+-
+</TD>
+<TD>
+-
+</TD>
+<TD>
+[
+<A href="#REQD10resume" title="A cruise control can only be resumed if it was activated atleast once.">D10resume</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMd_speed_value" title="speed value">d_speed_value</A>
+<A href="#PREDICATEcurr_speed_too_low" title="actual speed  &lt; speed_to_be_maintained">&lt;curr_speed_too_low() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;">i_on.c_active&lt;permit_cc()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQR1highspeed" title="When active, the system keeps the vehicle traveling steadily at the driver-specified high speed, without the driver having to keep his foot on the accelerator pedal. ">R1highspeed</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMd_speed_value" title="speed value">d_speed_value</A>
+<A href="#PREDICATEcurr_speed_too_low" title="actual speed  &lt; speed_to_be_maintained">&lt;curr_speed_too_low() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#OUTPUTe_accelerate" title="accelerate">e_accelerate</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;">i_on.c_active&lt;permit_cc()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQR1highspeed" title="When active, the system keeps the vehicle traveling steadily at the driver-specified high speed, without the driver having to keep his foot on the accelerator pedal. ">R1highspeed</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMi_off" title="ignition off event">i_off</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEclear/reset/deactive cc_system" title="[clear_cc_speed, c_light_deactivate]">clear/reset/deactive cc_system</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#lambda">lambda</A>
+</TD>
+<TD>
+[
+<A href="#REQR5carOff" title="The system terminates when the car's ignition is turned off.
+
+">R5carOff</A>
+, 
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMi_on" title="ignition on event">i_on</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEclear/reset/deactive cc_system" title="[clear_cc_speed, c_light_deactivate]">clear/reset/deactive cc_system</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+, 
+<A href="#REQD7ccreset" title="Once the car has been started, additional ignition starts will act as a cruise control system reset.">D7ccreset</A>
+]
+</TD>
+</TR>
+</TABLE>
+
+<H2 id="LENGTH4">Length 4</H2>
+
+<H3 id="i_onAAAc_active&lt;permit_cc()=true&gt;AAAa_pressed">Prefix: 
+
+<A href="#i_onAAAc_active<permit_cc()=true>">i_on.c_active&lt;permit_cc()=true&gt;.a_pressed</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMa_pressed" title="accelerator pedal pressed event">a_pressed</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAa_pressed">i_on.c_active&lt;permit_cc()=true&gt;.a_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQD8release" title="In cruise control active mode,   the brake release and accelerator release events cause no response.
+In cruise control passive mode, the brake release and accelerator press events cause no response.">D8release</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMa_released" title="accelerator pedal released event">a_released</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;">i_on.c_active&lt;permit_cc()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQD11" title="Cruise Control is taken out of passive mode when the accelerator is released.">D11</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMb_pressed" title="brake pedal pressed event">b_pressed</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAb_pressed">i_on.c_active&lt;permit_cc()=true&gt;.b_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQR3brake" title="An active cruise control system is automatically deactivated if the driver engages the brake (presumably to react to road or traffic conditions), or the accelerator pedal">R3brake</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMb_released" title="brake pedal released event">b_released</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAa_pressed">i_on.c_active&lt;permit_cc()=true&gt;.a_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQD1passive" title="If in cruise mode, pressing the accelerator puts cruise control in passive mode">D1passive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_active" title="activate button">c_active</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAa_pressed">i_on.c_active&lt;permit_cc()=true&gt;.a_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQD12" title="The cruise control system will only respond to the activate button when the cruise control system if off.">D12</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_decr" title="decrement button">c_decr</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAa_pressed">i_on.c_active&lt;permit_cc()=true&gt;.a_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQD1passive" title="If in cruise mode, pressing the accelerator puts cruise control in passive mode">D1passive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_incr" title="increment button">c_incr</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAa_pressed">i_on.c_active&lt;permit_cc()=true&gt;.a_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQD1passive" title="If in cruise mode, pressing the accelerator puts cruise control in passive mode">D1passive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_resume" title="resume button">c_resume</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAa_pressed">i_on.c_active&lt;permit_cc()=true&gt;.a_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQD10resume" title="A cruise control can only be resumed if it was activated atleast once.">D10resume</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMd_speed_value" title="speed value">d_speed_value</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAa_pressed">i_on.c_active&lt;permit_cc()=true&gt;.a_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQD9passive" title="In passive mode, the cruise control system will not try to control the speed of the car since the driver is pressing the accelerator.">D9passive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMi_off" title="ignition off event">i_off</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEclear/reset/deactive cc_system" title="[clear_cc_speed, c_light_deactivate]">clear/reset/deactive cc_system</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#lambda">lambda</A>
+</TD>
+<TD>
+[
+<A href="#REQR5carOff" title="The system terminates when the car's ignition is turned off.
+
+">R5carOff</A>
+, 
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMi_on" title="ignition on event">i_on</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEclear/reset/deactive cc_system" title="[clear_cc_speed, c_light_deactivate]">clear/reset/deactive cc_system</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+, 
+<A href="#REQD7ccreset" title="Once the car has been started, additional ignition starts will act as a cruise control system reset.">D7ccreset</A>
+]
+</TD>
+</TR>
+</TABLE>
+
+<H3 id="i_onAAAc_active&lt;permit_cc()=true&gt;AAAb_pressed">Prefix: 
+
+<A href="#i_onAAAc_active<permit_cc()=true>">i_on.c_active&lt;permit_cc()=true&gt;.b_pressed</A></H3>
+
+<TABLE border="2">
+<TR>
+<TH>Stimulus</TH>
+<TH>Response</TH>
+<TH>Equivalence</TH>
+<TH>Requirement Trace</TH>
+</TR>
+<TR>
+<TD>
+<A href="#STIMa_pressed" title="accelerator pedal pressed event">a_pressed</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQR3brake" title="An active cruise control system is automatically deactivated if the driver engages the brake (presumably to react to road or traffic conditions), or the accelerator pedal">R3brake</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMa_released" title="accelerator pedal released event">a_released</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAb_pressed">i_on.c_active&lt;permit_cc()=true&gt;.b_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQD8release" title="In cruise control active mode,   the brake release and accelerator release events cause no response.
+In cruise control passive mode, the brake release and accelerator press events cause no response.">D8release</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMb_pressed" title="brake pedal pressed event">b_pressed</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAb_pressed">i_on.c_active&lt;permit_cc()=true&gt;.b_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQR3brake" title="An active cruise control system is automatically deactivated if the driver engages the brake (presumably to react to road or traffic conditions), or the accelerator pedal">R3brake</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMb_released" title="brake pedal released event">b_released</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAb_pressed">i_on.c_active&lt;permit_cc()=true&gt;.b_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQR3brake" title="An active cruise control system is automatically deactivated if the driver engages the brake (presumably to react to road or traffic conditions), or the accelerator pedal">R3brake</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_active" title="activate button">c_active</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAb_pressed">i_on.c_active&lt;permit_cc()=true&gt;.b_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQD12" title="The cruise control system will only respond to the activate button when the cruise control system if off.">D12</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_decr" title="decrement button">c_decr</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAb_pressed">i_on.c_active&lt;permit_cc()=true&gt;.b_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQD5ccinactive" title="When the cruise control system is off or deactivated, all inputs except c_active or c_resume, which can activate the cruise control system, are ignored. ">D5ccinactive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_incr" title="increment button">c_incr</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAb_pressed">i_on.c_active&lt;permit_cc()=true&gt;.b_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQD5ccinactive" title="When the cruise control system is off or deactivated, all inputs except c_active or c_resume, which can activate the cruise control system, are ignored. ">D5ccinactive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_resume" title="resume button">c_resume</A>
+<A href="#PREDICATEpermit_cc" title="curr_speed &gt; 60 kph">&lt;permit_cc() = false&gt;</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAb_pressed">i_on.c_active&lt;permit_cc()=true&gt;.b_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQR4resume" title="The driver can resume a deactivated cruise control system. ">R4resume</A>
+, 
+<A href="#REQR2>50" title="The cruise control system can be activated only if the car is traveling at least 60 km/hr and if the brake is not being pressed. ">R2>50</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMc_resume" title="resume button">c_resume</A>
+<A href="#PREDICATEpermit_cc" title="curr_speed &gt; 60 kph">&lt;permit_cc() = true&gt;</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEresume_cc" title="[RSTBM, c_light_activate, display_cc_speed]">resume_cc</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;">i_on.c_active&lt;permit_cc()=true&gt;</A>
+</TD>
+<TD>
+[
+<A href="#REQR4resume" title="The driver can resume a deactivated cruise control system. ">R4resume</A>
+, 
+<A href="#REQR2>50" title="The cruise control system can be activated only if the car is traveling at least 60 km/hr and if the brake is not being pressed. ">R2>50</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMd_speed_value" title="speed value">d_speed_value</A>
+</TD>
+<TD>
+<UL>
+</UL>
+</TD>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAb_pressed">i_on.c_active&lt;permit_cc()=true&gt;.b_pressed</A>
+</TD>
+<TD>
+[
+<A href="#REQD5ccinactive" title="When the cruise control system is off or deactivated, all inputs except c_active or c_resume, which can activate the cruise control system, are ignored. ">D5ccinactive</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMi_off" title="ignition off event">i_off</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEclear/reset/deactive cc_system" title="[clear_cc_speed, c_light_deactivate]">clear/reset/deactive cc_system</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#lambda">lambda</A>
+</TD>
+<TD>
+[
+<A href="#REQR5carOff" title="The system terminates when the car's ignition is turned off.
+
+">R5carOff</A>
+, 
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+]
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#STIMi_on" title="ignition on event">i_on</A>
+</TD>
+<TD>
+<UL>
+<LI>
+<A href="#NAMEDRESPONSEclear/reset/deactive cc_system" title="[clear_cc_speed, c_light_deactivate]">clear/reset/deactive cc_system</A>
+</LI>
+</UL>
+</TD>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+[
+<A href="#REQD2~display" title="If cruise control is not active, red indicator light is off and the cruise speed is not displayed on the dashboard">D2~display</A>
+, 
+<A href="#REQD7ccreset" title="Once the car has been started, additional ignition starts will act as a cruise control system reset.">D7ccreset</A>
+]
+</TD>
+</TR>
+</TABLE>
+<H1 id="VARIABLES">State Variables</H1>
+<UL>
+<LI id="VARIABLECar State"><b>Car State</b></LI>
+<UL>
+<LI><b>Description:</b> Is the car on or off</LI>
+<LI><b>Possible Values:</b> 
+[
+-----
+, 
+Off
+, 
+On
+]
+</LI>
+</UL>
+<LI id="VARIABLECruise Control Mode"><b>Cruise Control Mode</b></LI>
+<UL>
+<LI><b>Description:</b> Off means it has never been set
+Active means it has been set
+Passive means it has been set, but the accelarator is being pressed
+Deactive means it has been set, but is currently deactivated</LI>
+<LI><b>Possible Values:</b> 
+[
+Passive
+, 
+Deactive
+, 
+-----
+, 
+Off
+, 
+Active
+]
+</LI>
+</UL>
+</UL>
+<H1 id="CSA">Canonical Sequence Analysis</H1>
+
+<TABLE border="2">
+<TR>
+<TH>Canonical Sequence</TH>
+<TH>Car State</TH>
+<TH>Cruise Control Mode</TH>
+</TR>
+<TR>
+<TD>
+<A href="#lambda">lambda</A>
+</TD>
+<TD>
+Off
+</TD>
+<TD>
+-----
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#i_on">i_on</A>
+</TD>
+<TD>
+On
+</TD>
+<TD>
+Off
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;">i_on.c_active&lt;permit_cc()=true&gt;</A>
+</TD>
+<TD>
+On
+</TD>
+<TD>
+Active
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAa_pressed">i_on.c_active&lt;permit_cc()=true&gt;.a_pressed</A>
+</TD>
+<TD>
+On
+</TD>
+<TD>
+Passive
+</TD>
+</TR>
+<TR>
+<TD>
+<A href="#i_onAAAc_active&lt;permit_cc()=true&gt;AAAb_pressed">i_on.c_active&lt;permit_cc()=true&gt;.b_pressed</A>
+</TD>
+<TD>
+On
+</TD>
+<TD>
+Deactive
+</TD>
+</TR>
+</TABLE>
+<p>The canonical sequence analysis has been completed.</p>
+<p>The canonical sequence analysis is disjoint.</p>
+<H1 id="STATEBOX">State Box Specification</H1>
+<A href="#STIMa_pressed"><H3>Stimulus: a_pressed, accelerator pedal pressed event</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="2">Initial State
+<TH colspan="2">Predicates
+<TH rowspan="2">Response
+<TH colspan="2">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+<TH><A href="#PREDICATEcurr_speed_too_low">curr_speed_too_low</A>
+<TH><A href="#PREDICATEpermit_cc">permit_cc</A>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+</TR>
+<TR CLASS=illegal>
+<TD>Off
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>On
+<TD>Off
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Off
+<TR>
+<TD>On
+<TD>Active
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTput_cc_in_passivemode">put_cc_in_passivemode</A>
+<TD>On
+<TD>Passive
+<TR>
+<TD>On
+<TD>Passive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Passive
+<TR>
+<TD>On
+<TD>Deactive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Off
+</TABLE>
+<A href="#STIMa_released"><H3>Stimulus: a_released, accelerator pedal released event</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="2">Initial State
+<TH colspan="2">Predicates
+<TH rowspan="2">Response
+<TH colspan="2">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+<TH><A href="#PREDICATEcurr_speed_too_low">curr_speed_too_low</A>
+<TH><A href="#PREDICATEpermit_cc">permit_cc</A>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+</TR>
+<TR CLASS=illegal>
+<TD>Off
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>On
+<TD>Off
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Off
+<TR>
+<TD>On
+<TD>Active
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Active
+<TR>
+<TD>On
+<TD>Passive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Active
+<TR>
+<TD>On
+<TD>Deactive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Deactive
+</TABLE>
+<A href="#STIMb_pressed"><H3>Stimulus: b_pressed, brake pedal pressed event</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="2">Initial State
+<TH colspan="2">Predicates
+<TH rowspan="2">Response
+<TH colspan="2">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+<TH><A href="#PREDICATEcurr_speed_too_low">curr_speed_too_low</A>
+<TH><A href="#PREDICATEpermit_cc">permit_cc</A>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+</TR>
+<TR CLASS=illegal>
+<TD>Off
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>On
+<TD>Off
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Off
+<TR>
+<TD>On
+<TD>Active
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTclear/reset/deactive cc_system">clear/reset/deactive cc_system</A>
+<TD>On
+<TD>Deactive
+<TR>
+<TD>On
+<TD>Passive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Deactive
+<TR>
+<TD>On
+<TD>Deactive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Deactive
+</TABLE>
+<A href="#STIMb_released"><H3>Stimulus: b_released, brake pedal released event</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="2">Initial State
+<TH colspan="2">Predicates
+<TH rowspan="2">Response
+<TH colspan="2">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+<TH><A href="#PREDICATEcurr_speed_too_low">curr_speed_too_low</A>
+<TH><A href="#PREDICATEpermit_cc">permit_cc</A>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+</TR>
+<TR CLASS=illegal>
+<TD>Off
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>On
+<TD>Off
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Off
+<TR>
+<TD>On
+<TD>Active
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Active
+<TR>
+<TD>On
+<TD>Passive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Passive
+<TR>
+<TD>On
+<TD>Deactive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Deactive
+</TABLE>
+<A href="#STIMc_active"><H3>Stimulus: c_active, activate button</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="2">Initial State
+<TH colspan="2">Predicates
+<TH rowspan="2">Response
+<TH colspan="2">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+<TH><A href="#PREDICATEcurr_speed_too_low">curr_speed_too_low</A>
+<TH><A href="#PREDICATEpermit_cc">permit_cc</A>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+</TR>
+<TR CLASS=illegal>
+<TD>Off
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>On
+<TD>Off
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+<A href="#OUTPUTactivate cc_system">activate cc_system</A>
+<TD>On
+<TD>Active
+<TR>
+<TD>On
+<TD>Off
+<TD>
+&nbsp;
+<TD>
+false
+<TD>null
+<TD>On
+<TD>Off
+<TR>
+<TD>On
+<TD>Active
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Active
+<TR>
+<TD>On
+<TD>Passive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Passive
+<TR>
+<TD>On
+<TD>Deactive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Deactive
+</TABLE>
+<A href="#STIMc_decr"><H3>Stimulus: c_decr, decrement button</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="2">Initial State
+<TH colspan="2">Predicates
+<TH rowspan="2">Response
+<TH colspan="2">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+<TH><A href="#PREDICATEcurr_speed_too_low">curr_speed_too_low</A>
+<TH><A href="#PREDICATEpermit_cc">permit_cc</A>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+</TR>
+<TR CLASS=illegal>
+<TD>Off
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>On
+<TD>Off
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Off
+<TR>
+<TD>On
+<TD>Active
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Active
+<TR>
+<TD>On
+<TD>Passive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Passive
+<TR>
+<TD>On
+<TD>Deactive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Deactive
+</TABLE>
+<A href="#STIMc_incr"><H3>Stimulus: c_incr, increment button</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="2">Initial State
+<TH colspan="2">Predicates
+<TH rowspan="2">Response
+<TH colspan="2">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+<TH><A href="#PREDICATEcurr_speed_too_low">curr_speed_too_low</A>
+<TH><A href="#PREDICATEpermit_cc">permit_cc</A>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+</TR>
+<TR CLASS=illegal>
+<TD>Off
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>On
+<TD>Off
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Off
+<TR CLASS=illegal>
+<TD>On
+<TD>Active
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>On
+<TD>Passive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Passive
+<TR>
+<TD>On
+<TD>Deactive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Deactive
+</TABLE>
+<A href="#STIMc_resume"><H3>Stimulus: c_resume, resume button</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="2">Initial State
+<TH colspan="2">Predicates
+<TH rowspan="2">Response
+<TH colspan="2">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+<TH><A href="#PREDICATEcurr_speed_too_low">curr_speed_too_low</A>
+<TH><A href="#PREDICATEpermit_cc">permit_cc</A>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+</TR>
+<TR CLASS=illegal>
+<TD>Off
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>On
+<TD>Off
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Off
+<TR CLASS=illegal>
+<TD>On
+<TD>Active
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>On
+<TD>Passive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Passive
+<TR>
+<TD>On
+<TD>Deactive
+<TD>
+&nbsp;
+<TD>
+true
+<TD>
+<A href="#OUTPUTresume_cc">resume_cc</A>
+<TD>On
+<TD>Active
+<TR>
+<TD>On
+<TD>Deactive
+<TD>
+&nbsp;
+<TD>
+false
+<TD>null
+<TD>On
+<TD>Deactive
+</TABLE>
+<A href="#STIMd_speed_value"><H3>Stimulus: d_speed_value, speed value</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="2">Initial State
+<TH colspan="2">Predicates
+<TH rowspan="2">Response
+<TH colspan="2">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+<TH><A href="#PREDICATEcurr_speed_too_low">curr_speed_too_low</A>
+<TH><A href="#PREDICATEpermit_cc">permit_cc</A>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+</TR>
+<TR CLASS=illegal>
+<TD>Off
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>illegal
+<TD>&nbsp;
+<TD>&nbsp;
+<TR>
+<TD>On
+<TD>Off
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Off
+<TR>
+<TD>On
+<TD>Active
+<TD>
+true
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTe_accelerate">e_accelerate</A>
+<TD>On
+<TD>Active
+<TR>
+<TD>On
+<TD>Active
+<TD>
+false
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Active
+<TR>
+<TD>On
+<TD>Passive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Passive
+<TR>
+<TD>On
+<TD>Deactive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>null
+<TD>On
+<TD>Deactive
+</TABLE>
+<A href="#STIMi_off"><H3>Stimulus: i_off, ignition off event</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="2">Initial State
+<TH colspan="2">Predicates
+<TH rowspan="2">Response
+<TH colspan="2">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+<TH><A href="#PREDICATEcurr_speed_too_low">curr_speed_too_low</A>
+<TH><A href="#PREDICATEpermit_cc">permit_cc</A>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+</TR>
+<TR>
+<TD>Off
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTclear/reset/deactive cc_system">clear/reset/deactive cc_system</A>
+<TD>Off
+<TD>-----
+<TR>
+<TD>On
+<TD>Off
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTclear/reset/deactive cc_system">clear/reset/deactive cc_system</A>
+<TD>Off
+<TD>-----
+<TR>
+<TD>On
+<TD>Active
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTclear/reset/deactive cc_system">clear/reset/deactive cc_system</A>
+<TD>Off
+<TD>-----
+<TR>
+<TD>On
+<TD>Passive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTclear/reset/deactive cc_system">clear/reset/deactive cc_system</A>
+<TD>Off
+<TD>-----
+<TR>
+<TD>On
+<TD>Deactive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTclear/reset/deactive cc_system">clear/reset/deactive cc_system</A>
+<TD>Off
+<TD>-----
+</TABLE>
+<A href="#STIMi_on"><H3>Stimulus: i_on, ignition on event</H3></A>
+
+<TABLE border="2">
+<TR>
+<TH colspan="2">Initial State
+<TH colspan="2">Predicates
+<TH rowspan="2">Response
+<TH colspan="2">Final State
+</TR>
+<TR>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+<TH><A href="#PREDICATEcurr_speed_too_low">curr_speed_too_low</A>
+<TH><A href="#PREDICATEpermit_cc">permit_cc</A>
+<TH><A href="#VARIABLECar State">Car State</A>
+<TH><A href="#VARIABLECruise Control Mode">Cruise Control Mode</A>
+</TR>
+<TR>
+<TD>Off
+<TD>-----
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTclear/reset/deactive cc_system">clear/reset/deactive cc_system</A>
+<TD>On
+<TD>Off
+<TR>
+<TD>On
+<TD>Off
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTclear/reset/deactive cc_system">clear/reset/deactive cc_system</A>
+<TD>On
+<TD>Off
+<TR>
+<TD>On
+<TD>Active
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTclear/reset/deactive cc_system">clear/reset/deactive cc_system</A>
+<TD>On
+<TD>Off
+<TR>
+<TD>On
+<TD>Passive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTclear/reset/deactive cc_system">clear/reset/deactive cc_system</A>
+<TD>On
+<TD>Off
+<TR>
+<TD>On
+<TD>Deactive
+<TD>
+&nbsp;
+<TD>
+&nbsp;
+<TD>
+<A href="#OUTPUTclear/reset/deactive cc_system">clear/reset/deactive cc_system</A>
+<TD>On
+<TD>Off
+</TABLE>
+</HTML>

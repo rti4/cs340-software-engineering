@@ -1,0 +1,208 @@
+#!/bin/sh
+# $Id: jumbl,v 4.3 2002/10/28 20:22:56 sprowell Exp $
+#
+# Copyright (c) 2001
+# Software Quality Research Laboratory
+# All rights reserved.
+#
+# http://www.cs.utk.edu/sqrl/
+#
+# $Log: jumbl,v $
+# Revision 4.3  2002/10/28 20:22:56  sprowell
+# Added hidden --imem option.
+#
+# Revision 4.2  2002/10/21 20:21:05  sprowell
+# The --debug switch now forces --nojar.
+#
+# Revision 4.1  2002/10/14 04:56:27  sprowell
+# Corrected problem with remote logins when coming from cygwin terminal.
+# When users would login to a true UNIX from cygwin, the term would stay
+# cygwin and this caused the script to try to correct the paths, which
+# caused problems.
+#
+# Revision 4.0  2002/10/13 23:42:36  sprowell
+# Bumped revision for JUMBL 4.
+#
+# Revision 1.8  2002/08/10 04:20:38  sprowell
+# Improved Cygwin support.
+#
+# Revision 1.7  2002/05/23 13:40:16  sprowell
+# Changed options visible to end user.
+#
+# Revision 1.6  2002/05/23 13:31:36  sprowell
+# Added checking for SQRLDEBUG environment variable.
+#
+# Revision 1.5  2002/04/23 16:49:39  sprowell
+# Added start of Cygwin support.
+#
+# Revision 1.4  2002/04/18 16:02:22  sprowell
+# Added handling of new environment variables JUMBLVMOPTS and
+# JUMBLMAXMEM.  Also added new --mem= switch.
+#
+# Revision 1.3  2002/01/25 20:49:07  sprowell
+# Changed == to -z for compatibility with Solaris sh.
+#
+# Revision 1.2  2002/01/25 20:45:17  sprowell
+# Added special options for debugging.
+#
+
+
+# Print usage details about the standard command line
+# options.
+list_opts() {
+    echo "UNIX / Linux JUMBL Wrapper Options:"
+    echo ""
+    if [ ! -z "$SQRLDEBUG" ] ; then
+        cat <<EOF
+  --nojar      Do not try to find the jar file, but assume that
+               classes are available in the CLASSPATH.  Only useful
+               for working with source installations.
+
+  --echoonly   Show what this script will do, but dont actually
+               do anything.  Only useful for debugging installation
+               problems.
+
+  --debug      Run the specified action within the Java debugger
+               if available; only for JUMBL distributions compiled
+               with debugging enabled.  Forces --nojar.
+
+  --profile    Enable profiling in the Java run-time environment.
+               Only available for the 1.3 or higher SDK; only for
+               JUMBL distributions compiled with debugging enabled.
+
+  --J[opt]     Pass [opt] to the Java run-time executable, or the
+               debugger, if debugging is chosen.
+
+  --imem=[num] Increase the memory limit for the virtual machine to
+               [num] megabytes.
+
+EOF
+    fi
+    cat <<EOF
+  --mem=[num]  Increase the memory limit for the virtual machine to
+               [num] megabytes.
+
+  --time       Time the execution of the specified action.
+
+EOF
+}
+
+
+# Figure out if this is running on Cygwin.
+cygwin="false"
+case "`uname`" in
+    CYGWIN*) cygwin="true" ;;
+esac
+
+
+# Use the default specification for the jar, if given.
+thejar=""
+if [ ! -z "$JUMBLJAR" ] ; then
+    thejar=$JUMBLJAR;
+fi
+
+
+# Handle environment variables.
+javaopt=""
+if [ ! -z "$JUMBLVMOPTS" ] ; then
+    javaopt="$JUMBLVMOPTS"
+fi
+if [ ! -z "$JUMBLMAXMEM" ] ; then
+    javaopt="$javaopt -Xmx${JUMBLMAXMEM}m"
+fi
+
+
+# Parse the command line arguments.
+args=""
+time=""
+java="java"
+do=""
+for opt in $* ; do
+    case "$opt" in
+        --nojar )
+            # Try to run everything from the CLASSPATH; don't
+            # try to locate the jar.
+            thejar="edu.utk.sqrl.jumbl.cl.Wrapper"
+            ;;
+        --echoonly )
+            # Tell the user what is going to be done, but don't
+            # do it.
+            do="echo"
+            ;;
+	--profile )
+	    # Turn on profiling for a 1.3+ JVM.
+	    javaopt="$javaopt -Xprof"
+	    ;;
+	--debug )
+	    # Turn on debugging for a 1.2+ JVM, and force --nojar.
+	    java="jdb"
+            thejar="edu.utk.sqrl.jumbl.cl.Wrapper"
+	    ;;
+	--time )
+	    # Turn on timing for the java execution.  The -p
+	    # flag makes time behave in a POSIX fashion.
+	    time="time -p"
+	    ;;
+	--J* )
+	    # This is an argument intended to be passed to the
+	    # Java virtual machine.  Store it to pass along after
+	    # stripping off the --J prefix.
+	    o=`echo "$opt" | sed 's:^--J::'`
+	    javaopt="$javaopt $o"
+	    ;;
+	--imem=* )
+	    # The initial memory to the virtual machine should be
+	    # increased.
+	    o=`echo "$opt" | sed 's:^--imem=::'`
+	    javaopt="$javaopt -Xms${o}m"
+	    ;;
+	--mem=* )
+	    # The memory to the virtual machine should be
+	    # increased.
+	    o=`echo "$opt" | sed 's:^--mem=::'`
+	    javaopt="$javaopt -Xmx${o}m"
+	    ;;
+	* )
+	    # This is probably intended to be passed to the
+	    # running system, so accumulate it.
+	    args="$args $opt"
+	    ;;
+    esac
+done
+
+
+if [ -z "$thejar" ] ; then
+    # Get the directory under which this script was invoked and
+    # then locate the runtime jar file, which should be in the
+    # same directory.  If the jar file cannot be found, then
+    # write an error and terminate.
+    dir=`dirname $0`
+    jar="$dir/jumbl_rt.jar"
+    if [ ! -r $jar ] ; then
+        echo "ERROR:"
+        echo "Unable to locate the runtime JAR file for the JUMBL."
+        echo "This is the file jumbl_rt.jar, and it should be in"
+        echo "the directory:"
+        echo "$dir"
+        exit 1
+    fi
+
+    # Add the jar switch to the switches.
+    thejar=$jar
+    javaopt="$javaopt -jar"
+fi
+
+
+# The runtime jar has been found.  Now execute the requested
+# command.
+if [ -z "$args" ] ; then list_opts; fi
+
+
+# On Cygwin, the path has to be modified so it can work with
+# the Windows java.  Handle this now.
+if [ "$cygwin" = "true" ] ; then
+    $do $time $java $javaopt `cygpath -w $thejar` $args
+else
+    eval "$do $time $java $javaopt $thejar $args"
+fi
+exit $?

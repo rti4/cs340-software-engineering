@@ -1,0 +1,388 @@
+
+<enumeration length='5' xmlns='http://cs.utk.edu/sqrl/pse'>
+  <version id='$Id: $'/>
+  <name value='Security alarm'>A simple software-controlled security alarm</name>
+  <require id='6'>Correct entry of the code deactivates the security alarm.</require>
+  <require id='7'>If a mistake is made when entering the code, the user must press the Clear button before the code can be reentered.</require>
+  <require id='D1'>The security alarm is initially deactivated.</require>
+  <require id='D2'>The device produces no external response to an erroneous entry.</require>
+  <require id='D3'>The device produces no external response to a Clear entry.</require>
+  <require id='D4'>The device produces no external response to correct entry of the code until all three digits of the code have been entered.</require>
+  <require id='D5'>After the device has been set, the Set button has no further effect until the device has been deactivated.</require>
+  <require id='1'>The security alarm has a detector that sends a trip signal when motion is detected.</require>
+  <require id='D6'>Incomplete entry of the code prior to a trip signal will be regarded as an erroneous entry that requires a Clear and a reentry of the correct code to deactivate the alarm.</require>
+  <require id='2'>The security alarm is activated by pressing the Set button.</require>
+  <require id='D7'>After the trip signal has set off the alarm, the trip signal has no further effect until the device has been deactivated.</require>
+  <require id='3'>The Set button is illuminated when the security alarm is set.</require>
+  <require id='4'>If a trip signal occurs while the security alarm is set, a high-pitched tone (alarm) is emitted.</require>
+  <require id='5'>A three-digit code must be entered to turn off the alarm tone.</require>
+  <interface id='control panel'>The control panel has a Set button, a Clear button, and nine digits. <trace id='2'/>
+    <trace id='5'/>
+    <trace id='7'/>
+  </interface>
+  <interface id='detector'>The detector sends a trip signal when motion is detected.<trace id='1'/>
+  </interface>
+  <output id='Alarm off' lname='Alarm off'>High-pitched sound deactivated<trace id='5'/>
+    <interfaceref id='detector'/>
+  </output>
+  <output id='Light on' lname='Light on'>Set button illuminated<trace id='3'/>
+    <interfaceref id='control panel'/>
+  </output>
+  <output id='Alarm on' lname='Alarm on'>High-pitched sound activated<trace id='4'/>
+    <interfaceref id='detector'/>
+  </output>
+  <output id='Light off' lname='Light off'>Set button not illuminated<trace id='D1'/>
+    <interfaceref id='control panel'/>
+  </output>
+  <stimulus id='B' lname='Bad digit'>Incorrect entry of a digit in the code<trace id='7'/>
+    <interfaceref id='control panel'/>
+  </stimulus>
+  <stimulus id='C' lname='Clear entry'>Clear button<trace id='7'/>
+    <interfaceref id='control panel'/>
+  </stimulus>
+  <stimulus id='G' lname='Good digit'>A digit that is part of the correct entry of the three-digit code that deactivates the alarm<trace id='5'/>
+    <interfaceref id='control panel'/>
+  </stimulus>
+  <stimulus id='S' lname='Set button'>Device activator<trace id='2'/>
+    <interfaceref id='control panel'/>
+  </stimulus>
+  <stimulus id='T' lname='Trip signal'>Trip signal from detector<trace id='1'/>
+    <interfaceref id='detector'/>
+  </stimulus>
+  <map id='lambda'>
+    <prefix id='lambda'/>
+    <response/>
+  </map>
+  <map id='B'>
+    <prefix id='lambda'/>
+    <stimulus id='B'/>
+    <trace id='D1'/>
+    <response output='illegal'/>
+  </map>
+  <map id='C'>
+    <prefix id='lambda'/>
+    <stimulus id='C'/>
+    <trace id='D1'/>
+    <response output='illegal'/>
+  </map>
+  <map id='G'>
+    <prefix id='lambda'/>
+    <stimulus id='G'/>
+    <trace id='D1'/>
+    <response output='illegal'/>
+  </map>
+  <map id='S'>
+    <prefix id='lambda'/>
+    <stimulus id='S'/>
+    <trace id='2'/>
+    <trace id='3'/>
+    <response>
+      <output id='Light on'/>
+    </response>
+  </map>
+  <map id='T'>
+    <prefix id='lambda'/>
+    <stimulus id='T'/>
+    <trace id='D1'/>
+    <response output='illegal'/>
+  </map>
+  <map id='S.B'>
+    <prefix id='S'/>
+    <stimulus id='B'/>
+    <trace id='D2'/>
+    <response/>
+  </map>
+  <map id='S.C'>
+    <prefix id='S'/>
+    <stimulus id='C'/>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.G'>
+    <prefix id='S'/>
+    <stimulus id='G'/>
+    <trace id='D4'/>
+    <response/>
+  </map>
+  <map id='S.S'>
+    <prefix id='S'/>
+    <stimulus id='S'/>
+    <trace id='D5'/>
+    <response/>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.T'>
+    <prefix id='S'/>
+    <stimulus id='T'/>
+    <trace id='4'/>
+    <response>
+      <output id='Alarm on'/>
+    </response>
+  </map>
+  <map id='S.B.B'>
+    <prefix id='S.B'/>
+    <stimulus id='B'/>
+    <trace id='D2'/>
+    <response/>
+    <equivalent id='S.B'/>
+  </map>
+  <map id='S.B.C'>
+    <prefix id='S.B'/>
+    <stimulus id='C'/>
+    <trace id='7'/>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.B.G'>
+    <prefix id='S.B'/>
+    <stimulus id='G'/>
+    <trace id='7'/>
+    <response output='illegal'/>
+  </map>
+  <map id='S.B.S'>
+    <prefix id='S.B'/>
+    <stimulus id='S'/>
+    <trace id='D5'/>
+    <response/>
+    <equivalent id='S.B'/>
+  </map>
+  <map id='S.B.T'>
+    <prefix id='S.B'/>
+    <stimulus id='T'/>
+    <trace id='4'/>
+    <response>
+      <output id='Alarm on'/>
+    </response>
+  </map>
+  <map id='S.G.B'>
+    <prefix id='S.G'/>
+    <stimulus id='B'/>
+    <trace id='D2'/>
+    <response/>
+    <equivalent id='S.B'/>
+  </map>
+  <map id='S.G.C'>
+    <prefix id='S.G'/>
+    <stimulus id='C'/>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.G.G'>
+    <prefix id='S.G'/>
+    <stimulus id='G'/>
+    <trace id='D4'/>
+    <response/>
+  </map>
+  <map id='S.G.S'>
+    <prefix id='S.G'/>
+    <stimulus id='S'/>
+    <trace id='D5'/>
+    <response/>
+    <equivalent id='S.G'/>
+  </map>
+  <map id='S.G.T'>
+    <prefix id='S.G'/>
+    <stimulus id='T'/>
+    <trace id='4'/>
+    <trace id='D6'/>
+    <response>
+      <output id='Alarm on'/>
+    </response>
+    <equivalent id='S.B.T'/>
+  </map>
+  <map id='S.T.B'>
+    <prefix id='S.T'/>
+    <stimulus id='B'/>
+    <trace id='D2'/>
+    <response/>
+    <equivalent id='S.B.T'/>
+  </map>
+  <map id='S.T.C'>
+    <prefix id='S.T'/>
+    <stimulus id='C'/>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S.T'/>
+  </map>
+  <map id='S.T.G'>
+    <prefix id='S.T'/>
+    <stimulus id='G'/>
+    <trace id='D4'/>
+    <response/>
+  </map>
+  <map id='S.T.S'>
+    <prefix id='S.T'/>
+    <stimulus id='S'/>
+    <trace id='D5'/>
+    <response/>
+    <equivalent id='S.T'/>
+  </map>
+  <map id='S.T.T'>
+    <prefix id='S.T'/>
+    <stimulus id='T'/>
+    <trace id='D7'/>
+    <response/>
+    <equivalent id='S.T'/>
+  </map>
+  <map id='S.B.T.B'>
+    <prefix id='S.B.T'/>
+    <stimulus id='B'/>
+    <trace id='D2'/>
+    <response/>
+    <equivalent id='S.B.T'/>
+  </map>
+  <map id='S.B.T.C'>
+    <prefix id='S.B.T'/>
+    <stimulus id='C'/>
+    <trace id='7'/>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S.T'/>
+  </map>
+  <map id='S.B.T.G'>
+    <prefix id='S.B.T'/>
+    <stimulus id='G'/>
+    <trace id='7'/>
+    <response output='illegal'/>
+  </map>
+  <map id='S.B.T.S'>
+    <prefix id='S.B.T'/>
+    <stimulus id='S'/>
+    <trace id='D5'/>
+    <response/>
+    <equivalent id='S.B.T'/>
+  </map>
+  <map id='S.B.T.T'>
+    <prefix id='S.B.T'/>
+    <stimulus id='T'/>
+    <trace id='D7'/>
+    <response/>
+    <equivalent id='S.B.T'/>
+  </map>
+  <map id='S.G.G.B'>
+    <prefix id='S.G.G'/>
+    <stimulus id='B'/>
+    <trace id='D2'/>
+    <response/>
+    <equivalent id='S.B'/>
+  </map>
+  <map id='S.G.G.C'>
+    <prefix id='S.G.G'/>
+    <stimulus id='C'/>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.G.G.G'>
+    <prefix id='S.G.G'/>
+    <stimulus id='G'/>
+    <trace id='6'/>
+    <response>
+      <output id='Light off'/>
+    </response>
+    <equivalent id='lambda'/>
+  </map>
+  <map id='S.G.G.S'>
+    <prefix id='S.G.G'/>
+    <stimulus id='S'/>
+    <trace id='D5'/>
+    <response/>
+    <equivalent id='S.G.G'/>
+  </map>
+  <map id='S.G.G.T'>
+    <prefix id='S.G.G'/>
+    <stimulus id='T'/>
+    <trace id='4'/>
+    <trace id='D6'/>
+    <response>
+      <output id='Alarm on'/>
+    </response>
+    <equivalent id='S.B.T'/>
+  </map>
+  <map id='S.T.G.B'>
+    <prefix id='S.T.G'/>
+    <stimulus id='B'/>
+    <trace id='D2'/>
+    <response/>
+    <equivalent id='S.B.T'/>
+  </map>
+  <map id='S.T.G.C'>
+    <prefix id='S.T.G'/>
+    <stimulus id='C'/>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S.T'/>
+  </map>
+  <map id='S.T.G.G'>
+    <prefix id='S.T.G'/>
+    <stimulus id='G'/>
+    <trace id='D4'/>
+    <response/>
+  </map>
+  <map id='S.T.G.S'>
+    <prefix id='S.T.G'/>
+    <stimulus id='S'/>
+    <trace id='D5'/>
+    <response/>
+    <equivalent id='S.T.G'/>
+  </map>
+  <map id='S.T.G.T'>
+    <prefix id='S.T.G'/>
+    <stimulus id='T'/>
+    <trace id='D7'/>
+    <response/>
+    <equivalent id='S.T.G'/>
+  </map>
+  <map id='S.T.G.G.B'>
+    <prefix id='S.T.G.G'/>
+    <stimulus id='B'/>
+    <trace id='D2'/>
+    <response/>
+    <equivalent id='S.B.T'/>
+  </map>
+  <map id='S.T.G.G.C'>
+    <prefix id='S.T.G.G'/>
+    <stimulus id='C'/>
+    <trace id='D3'/>
+    <response/>
+    <equivalent id='S.T'/>
+  </map>
+  <map id='S.T.G.G.G'>
+    <prefix id='S.T.G.G'/>
+    <stimulus id='G'/>
+    <trace id='3'/>
+    <trace id='5'/>
+    <trace id='6'/>
+    <response>
+      <output id='Alarm off'/>
+      <output id='Light off'/>
+    </response>
+    <equivalent id='lambda'/>
+  </map>
+  <map id='S.T.G.G.S'>
+    <prefix id='S.T.G.G'/>
+    <stimulus id='S'/>
+    <trace id='D5'/>
+    <response/>
+    <equivalent id='S.T.G.G'/>
+  </map>
+  <map id='S.T.G.G.T'>
+    <prefix id='S.T.G.G'/>
+    <stimulus id='T'/>
+    <trace id='D7'/>
+    <response/>
+    <equivalent id='S.T.G.G'/>
+  </map>
+  <canonical_sequence_map id='S.T.G'/>
+  <canonical_sequence_map id='S.T.G.G'/>
+  <canonical_sequence_map id='S.G'/>
+  <canonical_sequence_map id='S.T'/>
+  <canonical_sequence_map id='S.B.T'/>
+  <canonical_sequence_map id='lambda'/>
+  <canonical_sequence_map id='S.B'/>
+  <canonical_sequence_map id='S'/>
+  <canonical_sequence_map id='S.G.G'/>
+</enumeration>

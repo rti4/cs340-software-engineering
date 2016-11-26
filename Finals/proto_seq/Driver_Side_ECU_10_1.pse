@@ -1,0 +1,204 @@
+<enumeration length='1' xmlns='http://cs.utk.edu/sqrl/pse'>
+  <version id='$Id: $'/>
+  <name value='Driver Side ECU'>Driver Side ECU
+Jesse Lindsey
+David Baldwin
+Charles Hudson</name>
+  <require id='R2'>The driver side ECU initilizes when the car key is in start position.</require>
+  <require id='R3'>Each mirror can be adjusted in in the verritcal and has extreme up and down positions. Each mirror can be adjusted in the horizontal positions and has extreme positions.</require>
+  <require id='R4'>If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.</require>
+  <require id='D1'>MRUN = 0 when engine is on</require>
+  <require id='R5'>The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.</require>
+  <require id='D2'>If control is toggled to the passenger side ECU, all movement inputs are fowarded by the driver side ECU to the passenger side ECU.</require>
+  <require id='R6'>Engine has to be running when mirror heating is used.</require>
+  <require id='D3'>Car is initially off wtih key in Off position, and ECU is uninitialized.</require>
+  <require id='R7'>The engine state information is sent via the MRUN signal (MRUN = 1 when engine is on).</require>
+  <require id='D4'>Driver side mirror is initially selected for adjustment.</require>
+  <require id='D5'>Additional Start inputs are illegal.</require>
+  <require id='D6'>A timer stimulus cannot occur before the timer has been started</require>
+  <require id='D7'>If the heating unit is already active additional Temperature stimuli have no effect</require>
+  <require id='R1'>There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.</require>
+  <interface id='MAJ'>Movement Adjustment Joystick<trace id='R3'/>
+  </interface>
+  <interface id='Ignition'><trace id='D3'/>
+  </interface>
+  <interface id='Heater Assembly'>Includes: Car Mirror Heater, Temperature Sensor, and Timers.<trace id='D7'/>
+    <trace id='R5'/>
+    <trace id='R6'/>
+    <trace id='D6'/>
+  </interface>
+  <interface id='Driver Side Mirror'></interface>
+  <interface id='PS ECU'>Connection to the Passenger Side ECU<trace id='D2'/>
+  </interface>
+  <interface id='Can Bus'>The MRUN signal is sent via this interface.</interface>
+  <output id='H_on' lname='Heater On'>Turn heater on.<trace id='R5'/>
+    <interfaceref id='Heater Assembly'/>
+  </output>
+  <output id='Md' lname='Move Mirror Down'>Move Mirror Down<trace id='R3'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='Mr' lname='Move Mirror Right'>Move Mirror Right<trace id='R3'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='ERR' lname='Error'>An error message is generated and sent via the CAN bus.<trace id='R4'/>
+    <interfaceref id='Can Bus'/>
+  </output>
+  <output id='H_off' lname='Heater Off'>Turn heater off.  <trace id='R5'/>
+    <interfaceref id='Heater Assembly'/>
+  </output>
+  <output id='T1on' lname='Start 10 Second Timer'>Reset and start 10 Second Timer<trace id='R5'/>
+    <interfaceref id='Heater Assembly'/>
+  </output>
+  <output id='T1off' lname='Turn off of  10 sec timerTurn off 10 second timer'>Turn off  10 second timer<interfaceref id='Heater Assembly'/>
+  </output>
+  <output id='T2on' lname='Start 2 Minute Timer'>Reset and start 2 Minute Timer<trace id='R5'/>
+    <interfaceref id='Heater Assembly'/>
+  </output>
+  <output id='Mu' lname='Move Mirror Up'>Move Mirror Up<trace id='R3'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='FWD' lname='Forward Input'>Send adjustment joystick input to the passenger side ECU.<trace id='D2'/>
+    <interfaceref id='PS ECU'/>
+  </output>
+  <output id='Ml' lname='Move Mirror Left'>Move Mirror Left<trace id='R3'/>
+    <interfaceref id='Driver Side Mirror'/>
+  </output>
+  <output id='T2off' lname='Turn off 2 minute timer'>Turn off 2 minute timer<interfaceref id='Heater Assembly'/>
+  </output>
+  <stimulus id='-D' lname='Down'>Move the Mirror Down<trace id='R3'/>
+    <interfaceref id='MAJ'/>
+  </stimulus>
+  <stimulus id='TM1' lname='10 Second Timer'>10 second timer finishes<trace id='R5'/>
+    <interfaceref id='Heater Assembly'/>
+  </stimulus>
+  <stimulus id='TM2' lname='2 Minute Timer'>2 minute timer finishes<trace id='R5'/>
+    <interfaceref id='Heater Assembly'/>
+  </stimulus>
+  <stimulus id='-R' lname='Right'>Move mirror right<trace id='R3'/>
+    <interfaceref id='MAJ'/>
+  </stimulus>
+  <stimulus id='-U' lname='UP'>Move the mirror Upwards<trace id='R3'/>
+    <interfaceref id='MAJ'/>
+  </stimulus>
+  <stimulus id='Tg' lname='Toggle Switch'>User presses the toggle switch which controls which mirror will be controled when the mirror  adjustment joystick is pressed.  <trace id='R1'/>
+    <interfaceref id='MAJ'/>
+  </stimulus>
+  <stimulus id='S' lname='Start'>Key is moved to start position.<trace id='R2'/>
+    <interfaceref id='Ignition'/>
+  </stimulus>
+  <stimulus id='MRUN' lname='MRUN'>Engine state signal. It reports when the state of the engine changes.
+A MRUN = 1 signal  is sent when the engine turns on
+A MRUN = 0 signal  is sent when the engine turns off.    <trace id='R7'/>
+    <trace id='D1'/>
+    <interfaceref id='Can Bus'/>
+  </stimulus>
+  <stimulus id='-L' lname='Left'>Move mirror Left<trace id='R3'/>
+    <interfaceref id='MAJ'/>
+  </stimulus>
+  <stimulus id='T' lname='Temperature Sensor'>A signal is sent from the temperature sensor when the temperature is below 2 degrees Celsius.<trace id='R5'/>
+    <interfaceref id='Heater Assembly'/>
+  </stimulus>
+  <predicate id='ps'>false if trying to { 
+ move left and in an extreme left position or
+ move right and in an extreme right position or
+ move down and in an extreme down position or
+ move up and in an extreme up position
+}
+true otherwise;<trace id='R3'/>
+  </predicate>
+  <predicate id='mrun'>true: MRUN = 1
+false: MRUN = 0<trace id='R7'/>
+    <trace id='D1'/>
+  </predicate>
+  <map id='lambda'>
+    <prefix id='lambda'/>
+    <response/>
+  </map>
+  <map id='-D'>
+    <prefix id='lambda'/>
+    <stimulus id='-D'/>
+    <trace id='D3'/>
+    <response output='illegal'/>
+  </map>
+  <map id='-L'>
+    <prefix id='lambda'/>
+    <stimulus id='-L'/>
+    <trace id='D3'/>
+    <response output='illegal'/>
+  </map>
+  <map id='-R'>
+    <prefix id='lambda'/>
+    <stimulus id='-R'/>
+    <trace id='D3'/>
+    <response output='illegal'/>
+  </map>
+  <map id='-U'>
+    <prefix id='lambda'/>
+    <stimulus id='-U'/>
+    <trace id='D3'/>
+    <response output='illegal'/>
+  </map>
+  <map id='MRUN'>
+    <prefix id='lambda'/>
+    <stimulus id='MRUN'/>
+    <trace id='D3'/>
+    <response output='illegal'/>
+  </map>
+  <map id='S'>
+    <prefix id='lambda'/>
+    <stimulus id='S'/>
+    <trace id='R2'/>
+    <response output='illegal'/>
+  </map>
+  <map id='T'>
+    <prefix id='lambda'/>
+    <stimulus id='T'/>
+    <trace id='D3'/>
+    <response output='illegal'/>
+  </map>
+  <map id='TM1'>
+    <prefix id='lambda'/>
+    <stimulus id='TM1'/>
+    <trace id='D3'/>
+    <response output='illegal'/>
+  </map>
+  <map id='TM2'>
+    <prefix id='lambda'/>
+    <stimulus id='TM2'/>
+    <trace id='D3'/>
+    <response output='illegal'/>
+  </map>
+  <map id='Tg'>
+    <prefix id='lambda'/>
+    <stimulus id='Tg'/>
+    <trace id='D3'/>
+    <response output='illegal'/>
+  </map>
+  <state_variable id='Heater'>
+    <possible_value>Waiting</possible_value>
+    <possible_value>-----</possible_value>
+    <possible_value>Off</possible_value>
+    <possible_value>On</possible_value>
+  </state_variable>
+  <state_variable id='Car Started'>
+    <possible_value>-----</possible_value>
+    <possible_value>true</possible_value>
+    <possible_value>false</possible_value>
+  </state_variable>
+  <state_variable id='Toggled'>
+    <possible_value>-----</possible_value>
+    <possible_value>true</possible_value>
+    <possible_value>false</possible_value>
+  </state_variable>
+  <state_variable id='MRUN'>
+    <possible_value>-----</possible_value>
+    <possible_value>0</possible_value>
+    <possible_value>1</possible_value>
+  </state_variable>
+  <canonical_sequence_map id='lambda'>
+    <state_variable id='Car Started'>false</state_variable>
+    <state_variable id='Heater'>-----</state_variable>
+    <state_variable id='MRUN'>-----</state_variable>
+    <state_variable id='Toggled'>-----</state_variable>
+  </canonical_sequence_map>
+</enumeration>

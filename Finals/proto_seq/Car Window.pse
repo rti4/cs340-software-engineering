@@ -1,0 +1,144 @@
+<enumeration length='3' xmlns='http://cs.utk.edu/sqrl/pse'>
+  <version id='$Id: $'/>
+  <name value='Car Mirror'></name>
+  <require id='R2'>The driver side ECU initilizes when the car key is in start position.</require>
+  <require id='D0'>The engine state information is sent via the MRUN signal (MRUN = 0 when engine is off)</require>
+  <require id='R3'>Each mirror can be adjusted in in the verritcal and has extreme up and down  positions.  Each mirror can be adjusted int he horizontal positions and has extreme positions.</require>
+  <require id='R4'>If requsted movement cannot be made because the mirror is already in an extreme position, an error message is generated and sent via the CAN bus.</require>
+  <require id='R5'>The mirrors have heaters that come on when the outside temperature is 2 degrees Celsius, stay on for ten seconds, and stay off for two minutes before coming on again.</require>
+  <require id='R6'>Engine has to be running when mirror heating is used.</require>
+  <require id='R7'>The engine state information is sent via the MRUN signal (MRUN = 1 when engine is on).</require>
+  <require id='R1'>There is a switch that toggles for adjustment of either the driver side or the passenger side mirror.</require>
+  <output id='ME' lname='Mirror Error'>Extreme postion Reached:
+Send Error via CAN bus 
+  <trace id='R4'/>
+  </output>
+  <output id='TM' lname='Toggle Mirror'>Toggles between driver side
+passenger side mirror<trace id='R1'/>
+  </output>
+  <output id='MI' lname='Move Invalid'>User attemped move mirror in
+extreme direction
+  <trace id='R3'/>
+  </output>
+  <output id='H0' lname='Heater Off'>Start 2minute Timer<trace id='R5'/>
+  </output>
+  <output id='H1' lname='Heater On'>Turn on heater;
+Start 10sec Timer<trace id='R5'/>
+  </output>
+  <output id='MV' lname='Move Valid'>User moved mirror away from
+extreme position
+  <trace id='R3'/>
+  </output>
+  <stimulus id='MD' lname='Mirror Down'>**DO WE NEED THIS</stimulus>
+  <stimulus id='MR' lname='Mirror Right'>**DO WE NEED THIS
+</stimulus>
+  <stimulus id='T1' lname='Timer 10 sec'>Times how long the heater is on<trace id='R5'/>
+  </stimulus>
+  <stimulus id='R' lname='MRUN'>Engine is turned on<trace id='R2'/>
+    <trace id='R7'/>
+  </stimulus>
+  <stimulus id='EC' lname='Extreme Condition'>Sends via CAN bus that mirror
+is at one of its extreme positions<trace id='R4'/>
+  </stimulus>
+  <stimulus id='MU' lname='Mirror Up'>**DO WE NEED THIS</stimulus>
+  <stimulus id='T2' lname='Timer 2 min'>2 minute cooldown/temperature
+reset has been started<trace id='R5'/>
+  </stimulus>
+  <stimulus id='S' lname='Engine Start'>Key is in the start position<trace id='R2'/>
+  </stimulus>
+  <stimulus id='ML' lname='Mirror Left'>**DO WE NEED THIS</stimulus>
+  <stimulus id='T' lname='Temperature'>Compares mirror temperature to 
+outside temperature<trace id='R5'/>
+  </stimulus>
+  <stimulus id='Ts' lname='Mirror Toggle Switch'>User switches between driver
+and passanger side mirrors<trace id='R1'/>
+  </stimulus>
+  <predicate id='Extreme Down'>Mirror has reached the extreme down position. All downward inputs will be
+ignored<trace id='R4'/>
+  </predicate>
+  <predicate id='Extreme Right'>Mirror has reached the extreme right position. All rightward inputs will be
+ignored<trace id='R4'/>
+  </predicate>
+  <predicate id='Extreme Up'>Mirror has reached the extreme up position. All upward inputs will be
+ignored<trace id='R4'/>
+  </predicate>
+  <predicate id='Extreme Left'>Mirror has reached the extreme left position. All leftward inputs will be
+ignored<trace id='R4'/>
+  </predicate>
+  <map id='lambda'>
+    <prefix id='lambda'/>
+    <response/>
+  </map>
+  <map id='S'>
+    <prefix id='lambda'/>
+    <stimulus id='S'/>
+    <trace id='R2'/>
+    <response/>
+  </map>
+  <map id='S.EC&lt;Extreme Left()=false&gt;'>
+    <prefix id='S'/>
+    <stimulus id='EC'>
+      <predicate id='Extreme Left' value='false'/>
+    </stimulus>
+    <response/>
+  </map>
+  <map id='S.EC&lt;Extreme Left()=true&gt;'>
+    <prefix id='S'/>
+    <stimulus id='EC'>
+      <predicate id='Extreme Left' value='true'/>
+    </stimulus>
+    <response/>
+    <equivalent id='S.EC&lt;Extreme Left()=false&gt;'/>
+  </map>
+  <map id='S.MD'>
+    <prefix id='S'/>
+    <stimulus id='MD'/>
+    <response>
+      <output id='MV'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.ML'>
+    <prefix id='S'/>
+    <stimulus id='ML'/>
+    <response>
+      <output id='MI'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.MR'>
+    <prefix id='S'/>
+    <stimulus id='MR'/>
+    <response/>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.MU'>
+    <prefix id='S'/>
+    <stimulus id='MU'/>
+    <response/>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.R'>
+    <prefix id='S'/>
+    <stimulus id='R'/>
+    <response/>
+  </map>
+  <map id='S.T'>
+    <prefix id='S'/>
+    <stimulus id='T'/>
+    <response/>
+    <equivalent id='S'/>
+  </map>
+  <map id='S.Ts'>
+    <prefix id='S'/>
+    <stimulus id='Ts'/>
+    <response>
+      <output id='TM'/>
+    </response>
+    <equivalent id='S'/>
+  </map>
+  <canonical_sequence_map id='S.R'/>
+  <canonical_sequence_map id='S.EC&lt;Extreme Left()=false&gt;'/>
+  <canonical_sequence_map id='lambda'/>
+  <canonical_sequence_map id='S'/>
+</enumeration>
